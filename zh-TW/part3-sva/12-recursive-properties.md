@@ -4,24 +4,20 @@
 
 ## 學習目標
 
-- 定義引用自身的**recursive property**（recursive property）。
+- 定義一個會引用自身的**遞迴性質（recursive property）**。
 - 緊湊地陳述一個無界的時序需求。
-- 套用使 recursive property 保持良構（well-formed）的規則。
-- 辨識遞迴何時比冗長的運算子串鏈更清楚地表達意圖。
+- 套用那些讓 recursive property 保持良構（well-formed）的規則。
+- 辨識在什麼情況下，遞迴會比一長串運算子更清楚地表達意圖。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-recursive property 描述會重複自身 shape 的 intent。大多數 RTL check 不需要它，但對 unbounded 或
-inductive behavior，它可能比一長串 fixed delay 更自然。designer 仍然必須提供清楚的 exit condition，
-否則 recursion 會變得很難 reason。
+recursive property 描述的是一種會重複自身形態的意圖。大多數 RTL 檢查並不需要它，但對於無界或歸納式的行為，它往往比一長串固定延遲更自然。即便如此，設計者仍必須提供清楚的退出條件，否則整個遞迴會變得無從推理。
 
-只有當 protocol 本身 self-similar 時才考慮 recursion：持續套用這個 rule 直到 terminating event、
-一直接受同樣形式的 progress、或用 induction 證明 structure。如果 bounded window 已經足夠，
-通常 simple sequence 更清楚。
+只有當協定本身就是自相似的時候，才考慮動用遞迴：持續套用這條規則直到某個終止事件、不斷接受同一種形式的進展，或是以歸納法證明某個結構。如果一個有界視窗就已經足夠，通常一條單純的 sequence 反而更清楚。
 
 ## 什麼是 recursive property
 
-named property 可以在自己的本體中提及自己。每次引用都將同一 property 往後套用一個週期，因此一個有限的定義便能描述一項延伸到無界時間的義務。這就是**recursive property**。
+一個具名的 property 可以在自己的本體中提及自己。每一次引用，都把同一個 property 往後套用一個週期，於是一個有限的定義就能描述一項延伸到無界時間的義務。這就是 recursive property。
 
 最典型的例子是「觸發後永遠保持」。若無遞迴，你會需要一個無界運算子；有了遞迴，定義便是一行，每週期重新喚起自己：
 
@@ -34,7 +30,7 @@ endproperty
 assert property ($rose(lock) |-> stays_busy);
 ```
 
-將 `stays_busy` 讀作：「`busy` 現在成立，*且* `stays_busy` 從下一週期起成立。」展開後得到永無止境的 `busy ##1 busy ##1 busy ...`——這是陳述一個須無限期持續之不變式的緊湊方式。
+把 `stays_busy` 讀作：「`busy` 現在成立，*而且* `stays_busy` 從下一週期起也成立。」把它展開，就會得到永無止境的 `busy ##1 busy ##1 busy ...`，這是陳述一個須無限期持續的不變式的緊湊寫法。
 
 ## 帶出口的遞迴
 
@@ -56,9 +52,9 @@ assert property ($rose(grant) |-> hold_until_done);
 
 SVA 中的遞迴受到限制，以使每個實例可判定（decidable）。關鍵規則：
 
-- **隨時間推進。** 遞迴實例只能在一個正向時間步之後被觸及——也就是在 `nexttime`、`##1` 或等效延遲之後。在*同一*週期重新喚起自己的 property 沒有時間上的基底，是不合法的。
+- **隨時間推進。** 遞迴實例只能在一個正向時間步之後才被觸及，也就是要擺在 `nexttime`、`##1` 或等效的延遲之後。一個在*同一*週期就重新喚起自己的 property，在時間上沒有立足點，是不合法的。
 - **遞迴周圍不得有否定。** recursive property 不得出現在 `not` 之下，不得位於 implication 的左側，也不得出現在任何其真值必須以「否定」方式得知之處。遞迴只允許在正向位置（positive position）。
-- **允許相互遞迴**，受同樣的約束：兩個 property 可各自引用對方，antecedent 是迴圈的每個週期都推進時間且保持正向。
+- **允許相互遞迴**，但受同樣的約束：兩個 property 可以各自引用對方，前提是這個迴圈的每一個週期都推進時間，並且保持在正向位置。
 - **沒有區域變數的危害。** recursive property 一般不得以需要無界個相異儲存空間的方式讓區域變數穿過遞迴；請將每週期的狀態保留在設計中，或以有界形式呈現。
 
 這些規則保證遞迴要嘛在基底情形終止，要嘛每週期都有確定的進展，使工具能評估它。
@@ -81,11 +77,11 @@ endproperty
 assert property (burst_start |-> beat_then_rest);
 ```
 
-> **設計意圖。** recursive property 陳述的是一項*在時間上自相似*的意圖：「此規則現在成立，且同樣的規則對接下來的部分也成立。」它讓設計者能將一個無界或歸納的需求寫成一條清楚而有限的定義，而非一串笨拙的運算子。審慎使用時，它恰如協定本意地捕捉「持續這樣行為直到解除」。
+> **設計意圖。** recursive property 陳述的是一項*在時間上自相似*的意圖：「這條規則現在成立，而同樣的規則對接下來的部分也成立。」它讓設計者能把一個無界或歸納的需求，寫成一條清楚而有限的定義，而不是一串笨拙的運算子。只要審慎使用，它就能恰如協定本意地捕捉「持續這樣行為，直到被解除為止」。
 
 ## 常見陷阱
 
-- **零延遲遞迴。** 沒有時間步的自我引用不合法，且沒有時間上的基底。請務必透過 `nexttime` 或 `##1` 推進。
+- **零延遲遞迴。** 沒有時間步的自我引用不合法，且沒有時間上的基底。請務必用 `nexttime` 或 `##1` 推進時間。
 - **否定之下的遞迴。** 將 recursive property 置於 `not` 之下或 antecedent 側會違反正向性規則。請讓遞迴保持在正向位置。
 - **忘記基底情形。** 沒有出口的遞迴陳述的是嚴格的「永遠」規則。若義務應結束，請加上解除條件（`done`、`last`）。
 - **在有界運算子適用處使用遞迴。** 對於固定視窗或單純的「保持直到」，`##[1:N]`、`until` 或 `throughout` 更清楚。請將遞迴保留給無界或歸納的意圖。

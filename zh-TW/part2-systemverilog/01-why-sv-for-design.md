@@ -9,23 +9,19 @@
 - 了解這三種特化 `always` 區塊如何讓工具檢查設計規則。
 - 使用 `unique` 與 `priority` 修飾 case 敘述，以記錄決策結構。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-SystemVerilog 讓 RTL 可以更直接地表達 intent。`logic` 減少 `wire`/`reg` 的儀式感，specialized
-`always_*` block 宣告 process 應該 infer 哪一種 hardware，`unique` 或 `priority` 則把 designer
-對 decision tree 的假設交給 tool 檢查。
+SystemVerilog 讓 RTL 程式碼能更直接地說明設計意圖。`logic` 省去 `wire`／`reg` 的繁文縟節，特化的 `always_*` 區塊宣告這段程序應該推斷出哪一種硬體，`unique` 或 `priority` 則把設計者對決策樹的假設交給工具檢查。
 
-重點不是為了新語法而用新語法，而是把設計知識從 comment 和 coding folklore 移到 simulator、
-linter、synthesis tool 可以 check 的 construct 裡。當一個 SystemVerilog construct 能降低 hardware
-描述的 ambiguity，它就值得使用。
+重點不是為了用新語法而用新語法，而是把設計知識從註解和口耳相傳的慣例，搬進 simulator、linter、合成工具能夠檢查的語法構件裡。一個 SystemVerilog 語法構件只要能降低硬體描述的模糊，就值得使用。
 
 ## Verilog 型別的問題
 
 Verilog 要求將訊號宣告為 `wire` 或 `reg`。這個區別源自歷史，而非邏輯：`wire` 是線網（net），由持續性 `assign` 或模組埠驅動；`reg` 是變數（variable），在程序性指定之間保持其值。這兩個名稱都無法告訴你硬體是組合邏輯（combinational logic）還是循序邏輯（sequential logic）。
 
-這個混淆很深。`reg` 並不代表暫存器（register）。在 `always @(*)` 組合邏輯區塊內，你完全可以也應該使用 `reg`。工具是從區塊的結構推斷閂鎖器（latch）或組合閘，而非從訊號的宣告型別。閱讀程式碼的設計者，光靠 `reg` 無法判斷設計者是否意圖使用正反器（flip-flop）。
+這個混淆根深柢固。`reg` 並不代表暫存器（register）。在 `always @(*)` 組合邏輯區塊裡，你完全可以、也應該使用 `reg`。工具是從區塊的結構推斷出閂鎖器（latch）或組合閘，而不是看訊號的宣告型別。讀程式碼的人光靠 `reg` 一個字，根本判斷不出設計者原本是否想用正反器（flip-flop）。
 
-SystemVerilog 引入了 `logic`，這是一種單一的 4-state 型別，可以在所有過去使用 `wire` 或 `reg` 的地方使用。它簡化了宣告、消除了混淆，是 RTL 訊號的正確預設型別。
+SystemVerilog 引入 `logic`，一種單一的 4-state 型別，凡是過去用 `wire` 或 `reg` 的地方都能改用它。它讓宣告變得簡單、消除了上述混淆，是 RTL 訊號正確的預設型別。
 
 ```systemverilog
 // Verilog — 兩種型別，一個概念
@@ -49,7 +45,7 @@ Verilog 的 `always @(*)` 能用，但它是泛用的：它不記錄你意圖使
 
 ### `always_comb`
 
-使用 `always_comb` 表示組合邏輯。simulator 自動從區塊中讀取的所有變數推導敏感度列表（sensitivity list）——你完全不需要寫 `@(*)`。更重要的是，工具會檢查此區塊確實是組合邏輯：每個輸出必須在區塊的每條執行路徑上都被指定，且不允許有回授。
+使用 `always_comb` 表示組合邏輯。simulator 會自動從區塊中讀到的所有變數推導敏感度列表（sensitivity list），你完全不必再寫 `@(*)`。更重要的是，工具會檢查這個區塊確實是組合邏輯：每個輸出都必須在區塊的每條執行路徑上獲得指定，而且不允許有回授。
 
 ```systemverilog
 always_comb begin
@@ -63,7 +59,7 @@ end
 
 若你不小心在某條路徑上漏掉某個變數的指定，lint 工具或 simulator 會報告違規。使用普通的 `always @(*)`，你會悄悄地推斷出一個閂鎖器。
 
-`always_comb` 也在時間零之後的一個 delta 時間點啟動，確保此區塊在任何邊緣觸發區塊讀取其輸出之前先完成求值。這與組合邏輯在時脈緣之前穩定的行為一致。
+`always_comb` 還會在時間零之後的一個排程器 delta 啟動，確保它在任何邊緣觸發區塊讀取它的輸出之前就先完成求值。這正符合組合邏輯在時脈緣之前先穩定下來的行為。
 
 ### `always_ff`
 
@@ -78,7 +74,7 @@ always_ff @(posedge clk or negedge rst_n) begin
 end
 ```
 
-違規——例如使用 `=` 而非 `<=`——會被標記為 lint 錯誤，而不是悄悄產生錯誤行為。這個關鍵字對每位閱讀者和每個工具都清楚地說明了設計意圖。
+違規的寫法，例如用 `=` 而非 `<=`，會被標記為 lint 錯誤，而不會悄悄產生錯誤行為。這個關鍵字對每位閱讀者和每個工具都清楚說明了設計意圖。
 
 ### `always_latch`
 
@@ -92,13 +88,13 @@ always_latch begin
 end
 ```
 
-在大多數設計中，`always_latch` 區塊是一個警示，提示設計意圖應該重新考量。優先使用暫存器邏輯。但當閂鎖器是刻意的——例如在時脈閘控（clock-gate）使能路徑中——使用 `always_latch` 讓意圖明確，並能抑制虛假的 lint 警告。
+在大多數設計裡，`always_latch` 區塊本身就是一個警訊，提醒你重新檢視設計意圖，這時應優先改用暫存器邏輯。但若閂鎖器確實是刻意的，例如位於時脈閘控（clock-gate）的使能路徑上，用 `always_latch` 就能把意圖講清楚，並抑制虛假的 lint 警告。
 
-> **設計意圖。** `always_comb`、`always_ff`、`always_latch` 將每個程序區塊對應到一種硬體類別。閱讀者從關鍵字就能看出意圖，而無需解讀敏感度列表和指定風格。工具接著可以檢查程式碼是否符合關鍵字的聲明——將編碼慣例轉化為可強制執行的規則。
+> **設計意圖。** `always_comb`、`always_ff`、`always_latch` 各自把一個程序區塊對應到一種硬體類別。閱讀者光看關鍵字就能讀出意圖，不必再去解讀敏感度列表和指定風格。工具隨後就能檢查程式碼是否符合關鍵字所聲明的內容，把編碼慣例變成可強制執行的規則。
 
 ## `unique` 與 `priority` case 修飾詞
 
-Verilog 的普通 `case` 敘述不保證覆蓋完整性。若沒有分支匹配，輸出保持當前值（在組合邏輯區塊中暗示閂鎖器），或者單純不更新。SystemVerilog 新增兩個修飾詞，用於記錄和檢查決策結構。
+Verilog 的普通 `case` 敘述不保證覆蓋完整。若沒有任何分支匹配，輸出會保持原值（在組合邏輯區塊中就暗示了閂鎖器），或者乾脆不更新。SystemVerilog 新增了兩個修飾詞，用來記錄並檢查決策結構。
 
 ### `unique case`
 
@@ -118,11 +114,11 @@ always_comb begin
 end
 ```
 
-使用 `unique`，合成工具可以在假設各分支互斥的前提下進行最佳化。若 case 表達式同時匹配多個分支或完全不匹配，simulator 會在執行時發出警告。這消除了那些本應完整解碼的 case 中的優先級編碼和推斷的閂鎖器。
+有了 `unique`，合成工具就能在「各分支互斥」的前提下最佳化。若 case 表達式同時匹配多個分支或一個都沒匹配到，simulator 會在執行時發出警告。對於本應完整解碼的 case，這就消除了優先級編碼以及推斷出來的閂鎖器。
 
 ### `priority case`
 
-`priority case` 聲明各分支按順序求值，第一個匹配的分支獲勝——如同一連串的 `if / else if`。它也聲明 case 是完整的：至少有一個分支永遠會匹配。
+`priority case` 聲明各分支依序求值，第一個匹配的分支勝出，行為如同一串 `if / else if`。它同時聲明 case 是完整的：永遠至少有一個分支會匹配。
 
 ```systemverilog
 always_comb begin
@@ -136,7 +132,7 @@ always_comb begin
 end
 ```
 
-`priority case` 適用於優先級編碼器或第一匹配仲裁確實是設計意圖的情況。若各分支確實互斥，應使用 `unique`。注意這裡的 `default`：少了它，`priority` 等於聲明 `req` 永遠至少有一個位元為 1，閒置週期（`req == 0`）會違反所聲明的完整性，且該次求值不會驅動 `grant`。
+`priority case` 適用於優先級編碼器，或第一匹配仲裁確實就是設計意圖的場合。若各分支本來就互斥，應改用 `unique`。注意這裡的 `default`：少了它，`priority` 就等於聲明 `req` 永遠至少有一個位元為 1，於是閒置週期（`req == 0`）會違反所聲明的完整性，且該次求值不會驅動 `grant`。
 
 ### `unique if` 與 `priority if`
 
@@ -150,13 +146,13 @@ else if (state == DECODE)   next = EXECUTE;
 else if (state == EXECUTE)  next = IDLE;
 ```
 
-在完整解碼的有限狀態機（FSM）狀態轉換上使用 `unique if`，告訴工具每個合法狀態都已覆蓋且無兩個條件重疊。工具在 simulation 時進行兩者的檢查，並在合成時可進行最佳化。
+在完整解碼的有限狀態機（FSM）狀態轉換上使用 `unique if`，告訴工具每個合法狀態都已覆蓋且無兩個條件重疊。工具會在 simulation 時檢查這兩件事，合成時也能據以最佳化。
 
 ## 常見陷阱
 
 - **使用 `reg` 卻意圖是 `logic`。** 名稱容易誤導；將所有非真正多驅動線網的 RTL 訊號都改為 `logic`。
 - **對循序邏輯寫 `always @(*)`。** 一個讀取時脈緣的 `always @(*)` 區塊具有非直覺的敏感度列表。請使用 `always_ff` 並明確地將時脈加入列表。
-- **忘記 `always_comb` 會檢查完整性。** 它不會悄悄允許不完整的分支——這正是它的目的。請加入 `default` 或涵蓋所有情況。
+- **忘記 `always_comb` 會檢查完整性。** 它不會悄悄放過不完整的分支，這正是它存在的目的。請加上 `default` 或涵蓋所有情況。
 - **對不完整的集合使用 `unique`。** 若輸入合法上可能落在列出的分支之外，請勿使用 `unique`；你會得到虛假的 simulation 警告。
 - **在 `always_ff` 中混用阻塞式指定 `=`。** Lint 工具會將此標記為違反 `always_ff` 合約。請使用 `<=`。
 
@@ -165,7 +161,7 @@ else if (state == EXECUTE)  next = IDLE;
 - `logic` 統一了 RTL 訊號的 `wire` 與 `reg`；除真正的多驅動線網外，一律使用它。
 - `always_comb`、`always_ff`、`always_latch` 使程序區塊的意圖明確，並讓工具能夠檢查設計規則。
 - `unique case` 聲明互斥且完整的決策；`priority case` 聲明按優先級排序且完整的決策；兩者在 simulation 時都被檢查。
-- 這些特性在合成時零成本——它們增加資訊，不增加硬體。
+- 這些特性在合成時零成本：它們增加的是資訊，不是硬體。
 
 ---
 

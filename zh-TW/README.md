@@ -4,15 +4,15 @@
 
 本指南寫給 RTL 設計工程師。內容涵蓋撰寫可合成（synthesizable）硬體所需的 Verilog
 與 SystemVerilog，並深入介紹 **SystemVerilog Assertions（SVA）**，因為 assertion
-正是設計者用來記錄 design intent 的工具。
+正是設計者記錄設計意圖（design intent）的方式。
 
 若你剛接觸這些語言，建議依序閱讀。若你已能撰寫 RTL，可直接跳到 **第三部**。
 
 ## 閱讀風格
 
-這份指南可以當成設計者的 working reference，而不只是 syntax list。每章會先說明該 construct
-背後的 mental model，再進入 example 與 pitfall。如果你只是快速瀏覽，請先讀這段 mental model；
-它會告訴你這個 syntax 想把什麼 intent 明確化。
+這份指南是設計者平時可隨手翻閱的參考書，不只是一份語法清單。每章都先點出該語法構件
+背後的心智模型，再進入範例與常見陷阱。如果你只是快速瀏覽，請先讀心智模型那一段，
+它會告訴你這個語法想把什麼設計意圖講清楚。
 
 ## 目錄
 

@@ -9,16 +9,15 @@
 - 知道位元運算與邏輯運算的差異，以及 `==` 與 `===` 的不同。
 - 避免常見的寬度與有號數陷阱。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-expression 可以看成一小段 hardware network。operator 決定 gate 的形狀，reduction 把 vector
-壓成較少的 bit，concatenation 負責 bit routing，comparison 則決定 unknown 如何參與。讀
-expression 時，先把它當 hardware 看，再看 syntax：哪些 bit 進來、幾個 bit 出去、`x` 或
-signedness 會不會改變結果。
+運算式可以看成一小段硬體網路。運算子決定要用哪些邏輯閘，縮減運算把向量壓成較少的位元，
+串接負責安排位元的去向，比較運算則決定未知值如何參與。讀運算式時，先把它當硬體看，再看
+語法：哪些位元進來、幾個位元出去、`x` 或有號性會不會改變結果。
 
-這也是 simulation 與 synthesis 容易悄悄偏離 intent 的地方。simulator 會忠實套用 language 的
-sizing 與 four-state rule，但那不一定等同於設計者心中的規則。好的 RTL 會把 width 與
-signedness 寫得足夠明確，讓 expression 看起來就像你真的要建出的 hardware。
+這裡也是 simulation 與合成容易悄悄偏離設計意圖之處。simulator 會忠實套用語言的寬度規則
+與四態規則，但那不一定就是設計者心中所想的規則。好的 RTL 會把寬度與有號性寫得夠明確，
+讓運算式讀起來就像你真正想建出的那塊硬體。
 
 ## 運算子群組
 
@@ -57,7 +56,7 @@ Verilog 運算子分為幾個群組。在 RTL 中最常用的如下：
 ^data   // parity: 1 if an odd number of bits are 1
 ```
 
-這些寫法精簡且合成效果佳——`&data` 是全一檢查，無需字面值比較。
+這些寫法精簡，合成效果也好：`&data` 就是一個全一檢查，不必另外寫字面值來比較。
 
 ## 串接與複製
 
@@ -97,7 +96,7 @@ c = a + b;   // b is zero-extended to 8 bits before the add
 4'b1x10 === 4'b1x10  // 1  (exact match including the x)
 ```
 
-在可合成 RTL 中請使用 `==`——`===` 不可合成，因為真實硬體沒有 `x`。`===` 適用於測試平台（testbench）與斷言中，用於對 `x`/`z` 進行檢查。
+在可合成 RTL 中請使用 `==`，因為 `===` 不可合成，真實硬體沒有 `x`。`===` 適用於測試平台（testbench）與斷言中，用來檢查 `x`/`z`。
 
 ## 有號算術
 
@@ -113,7 +112,7 @@ wire signed [7:0] diff = s - 8'sd1;   // signed literal: 8'sd1
 > **設計意圖。** 運算式的寬度與有號性是意圖的一部分：
 > 「這個加法器是 8 位元無號」、「這個差值是有號的。」
 > Verilog 從上下文推斷兩者，因此當推斷不明顯時，請以帶寬度的有號字面值
-> 與中間訊號明確陳述。讀者——以及合成工具——不應猜測。
+> 與中間訊號明確寫出來。無論是讀者還是合成工具，都不該需要去猜。
 
 ## 常見陷阱
 
@@ -127,7 +126,7 @@ wire signed [7:0] diff = s - 8'sd1;   // signed literal: 8'sd1
 - 熟悉各運算子群組；不要混淆位元運算與邏輯運算。
 - 縮減運算子將向量折疊為一個位元，且合成乾淨。
 - 運算式寬度由上下文決定；截斷與延伸是靜默發生的。
-- RTL 中使用 `==`；僅在測試平台/斷言中進行 `x`/`z` 檢查時使用 `===`。
+- RTL 中使用 `==`；只有在測試平台或斷言中需要檢查 `x`/`z` 時才用 `===`。
 
 ---
 

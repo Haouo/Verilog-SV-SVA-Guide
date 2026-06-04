@@ -9,16 +9,15 @@
 - 在不推斷閂鎖器（latch）的前提下使用 `if` 與 `case`。
 - 理解 `full_case` / `parallel_case` 並知道為何應避免使用。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-combinational logic 是 current input 到 current output 的 pure mapping，不應該有 memory。如果
-procedural block 在某些 path 沒有 assign output，hardware 若要保留舊值就只能產生 storage，
-通常就是 unintended latch。所以 complete assignment 是本章最核心的習慣。
+組合邏輯是當下輸入到當下輸出的純粹對應，不該有任何記憶。如果一個程序區塊在某些路徑上
+沒有指定輸出，硬體想保留舊值就只能產生儲存元件，通常就是一個非預期的閂鎖器。正因如此，
+在每條路徑上把輸出指定完整，是本章最核心的習慣。
 
-review combinational RTL 時，先問兩個問題再逐行讀：哪些 signal 是 decision 的 input？每條
-path 是否 assign 每個 output？syntax 可以是 `assign`、`always @(*)`，或之後的 `always_comb`，
-但檢查標準一樣：沒有 hidden state、沒有 missing sensitivity、沒有 case branch 意外依賴
-previous value。
+檢視組合 RTL 時，先問兩個問題，再逐行讀：哪些訊號是這個判斷的輸入？每條路徑是否都指定了
+每個輸出？語法可以是 `assign`、`always @(*)`，或之後會看到的 `always_comb`，但硬體上的檢查
+標準都一樣：沒有隱藏狀態、沒有遺漏的敏感度、也沒有任何 case 分支意外依賴先前的值。
 
 ## 組合邏輯的兩種寫法
 
@@ -47,11 +46,11 @@ always @* begin
 end
 ```
 
-目標雖是 `reg`（見第 2 章），但這仍是組合邏輯，而非暫存器——這裡沒有時脈。
+目標雖是 `reg`（見第 2 章），但這仍是組合邏輯，而非暫存器，因為這裡沒有時脈。
 
 ## 敏感度列表
 
-`always @*`（等同於 `always @(*)`）告訴工具：當該區塊所讀取的*任何*訊號變化時，觸發此區塊。組合邏輯應一律使用它。舊式的手動列舉訊號方式——`always @(a or b or sel)`——容易出錯：遺漏一個訊號，simulation 結果便不再與合成（synthesis）結果一致，因為合成工具無論如何都會建構組合邏輯，不受你的列表影響。
+`always @*`（等同於 `always @(*)`）告訴工具：當該區塊所讀取的*任何*訊號變化時，觸發此區塊。組合邏輯應一律使用它。舊式那種手動列舉訊號的寫法，也就是 `always @(a or b or sel)`，容易出錯：只要漏掉一個訊號，simulation 結果便不再與合成（synthesis）結果一致，因為合成工具無論如何都會建構組合邏輯，不受你的列表影響。
 
 ```verilog
 // Good: complete sensitivity, by construction
@@ -65,7 +64,7 @@ end
 
 ## 避免閂鎖器
 
-這是組合 `always` 區塊最核心的危險。若某變數在區塊的*某條路徑上未被指定*，工具就必須保持其先前的值——這意味著它推斷出一個閂鎖器（latch）。RTL 中的閂鎖器幾乎都是錯誤：它們製造時序問題，通常也意味著描述不完整。
+這是組合 `always` 區塊最核心的危險。若某變數在區塊的*某條路徑上未被指定*，工具就必須保持其先前的值，也就等於推斷出一個閂鎖器（latch）。RTL 中的閂鎖器幾乎都是錯誤：它們製造時序問題，通常也代表描述不完整。
 
 ```verilog
 // Latch inferred: result is not assigned when en is 0
@@ -105,9 +104,9 @@ always @* begin
 end
 ```
 
-當 `sel` 可能為 `x`（例如在重置傳播期間），將 `y` 送到已知值——或送到 `x` 以暴露問題——的 `default` 分支既能防止閂鎖器，也讓意圖明確。
+當 `sel` 可能為 `x`（例如在重置傳播期間），用 `default` 分支把 `y` 送到一個已知值，或刻意送到 `x` 以暴露問題，既能防止閂鎖器，也讓意圖明確。
 
-`casez` 將 `z`/`?` 位元視為 don't-care，適用於優先解碼器（priority decoder）。`casex` 也將 `x` 視為 don't-care，可能遮蔽錯誤——請優先使用 `casez`。
+`casez` 將 `z`/`?` 位元視為 don't-care，適用於優先解碼器（priority decoder）。`casex` 連 `x` 都當成 don't-care，可能遮蔽錯誤，因此請優先使用 `casez`。
 
 ## `full_case` 與 `parallel_case`
 
@@ -116,11 +115,11 @@ end
 - `full_case` 宣稱所有可能的 `case` 值都已涵蓋。
 - `parallel_case` 宣稱各項目是互斥的。
 
-兩者都應避免。它們告訴合成工具假設某些 simulator 不假設的事，導致 simulation 與合成產生分歧——這正是斷言（assertion）存在所要捕捉的不一致。請改為撰寫帶有明確 `default` 的完整 `case`，讓工具看到真實情況。
+兩者都應避免。它們要合成工具去假設某些 simulator 並不假設的事，使 simulation 與合成產生分歧，而這正是斷言（assertion）存在的目的所要捕捉的不一致。請改為撰寫帶有明確 `default` 的完整 `case`，讓工具看到真實情況。
 
 > **設計意圖。** 組合區塊的本意是成為輸入的純函數。
-> 閂鎖器透過引入隱藏狀態打破了這個意圖。
-> `always @*`、預設指定、每個 `case` 中的 `default`——這套紀律
+> 閂鎖器引入了隱藏狀態，因而破壞這個意圖。
+> `always @*`、預設指定、每個 `case` 中的 `default`，這套紀律
 > 就是你表達「這是純組合邏輯」的方式，讓工具確實建構出你所想要的。
 
 ## 常見陷阱
