@@ -139,9 +139,10 @@ end
 ```
 
 In clocked blocks, use `<=` for the non-blocking version: `count <= count + 1`
-rather than `count++`. The `++` operator with a non-blocking assignment is legal
-(`count++ <=` is not; write the explicit form). Keep increment notation for
-combinational loop variables where the blocking context is clear.
+rather than `count++`. The `++` operator always performs a blocking update — it
+has no non-blocking form — so in `always_ff` write the explicit assignment. Keep
+increment notation for combinational loop variables where the blocking context
+is clear.
 
 ## `case inside`
 

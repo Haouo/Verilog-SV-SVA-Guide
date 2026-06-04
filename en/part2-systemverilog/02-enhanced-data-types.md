@@ -244,6 +244,8 @@ logic [7:0] result;
 
 // OK: bit or int for synthesis-time constants and loop variables
 localparam int DEPTH = 256;
+
+// Generate loops use genvar — an elaboration-time index, not int/bit
 for (genvar i = 0; i < DEPTH; i++) begin : gen_cells
     // ...
 end

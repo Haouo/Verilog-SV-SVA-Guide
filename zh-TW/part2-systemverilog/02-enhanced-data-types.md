@@ -78,7 +78,7 @@ SystemVerilog 為 enum 變數提供內建方法，供 simulation 和測試平台
 
 ## `struct` — 將相關訊號組合
 
-`struct` 將多個欄位組合在一個名稱下。當多個訊號在概念上屬於一起時使用它——例如匯流排交易（bus transaction）的各欄位，或流水線（pipeline）級的控制字。
+`struct` 將多個欄位組合在一個名稱下。當多個訊號在概念上屬於一起時使用它——例如匯流排交易（bus transaction）的各欄位，或管線（pipeline）級的控制字。
 
 ```systemverilog
 typedef struct {
@@ -205,6 +205,8 @@ logic [7:0] result;
 
 // OK: bit or int for synthesis-time constants and loop variables
 localparam int DEPTH = 256;
+
+// Generate loops use genvar — an elaboration-time index, not int/bit
 for (genvar i = 0; i < DEPTH; i++) begin : gen_cells
     // ...
 end

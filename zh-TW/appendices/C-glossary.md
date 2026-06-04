@@ -26,7 +26,7 @@
 | RTL (Register-Transfer Level) | 暫存器轉移層級 | 描述可合成硬體的抽象層級：每個 clock 週期對暫存器執行運算並傳遞資料。 |
 | assertion | 斷言 | 對預期行為的可驗證陳述。違反時由 simulator 或 formal tool 回報。 |
 | property | 性質 | 跨越一個或多個 clock 週期的時序陳述，在特定時間點可成立或失敗。 |
-| sequence | 序列 | 描述跨越一個或多個 clock 週期的信號事件樣式，作為 property 的建構單元。 |
+| sequence | 序列 | 描述跨越一個或多個 clock 週期的訊號事件樣式，作為 property 的建構單元。 |
 | implication | 蘊涵 | `\|->`（重疊）或 `\|=>`（非重疊）運算子：「若 antecedent 匹配，consequent 必須成立。」 |
 | vacuity / vacuous pass | 空真 / 空泛成立 | 當 assertion 的 antecedent 從未為真時，assertion 在不進行任何實質檢查的情況下通過。使用 cover property 可診斷此問題。 |
 | formal verification | 形式化驗證 | 以數學方法證明 property 在所有合法輸入及所有可達狀態下均成立，無需 simulation。 |

@@ -77,7 +77,7 @@ endsequence
 `seq1 within seq2` 要求 `seq1` 在 `seq2` 的跨度*之內*某處匹配：`seq1` 在 `seq2` 起始當下或之後起始，並在 `seq2` 結束當下或之前結束：
 
 ```systemverilog
-// A single ack pulse must occur somewhere within the busy window
+// An ack must occur somewhere within the busy window
 sequence ack_in_busy;
     (ack[*1]) within (busy[*1:$]);
 endsequence

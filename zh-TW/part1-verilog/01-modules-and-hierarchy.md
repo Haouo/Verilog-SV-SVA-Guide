@@ -89,7 +89,7 @@ endmodule
 
 ```verilog
 module adder #(
-    parameter int WIDTH = 8
+    parameter WIDTH = 8
 ) (
     input  wire [WIDTH-1:0] a,
     input  wire [WIDTH-1:0] b,

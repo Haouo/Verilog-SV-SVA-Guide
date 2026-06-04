@@ -109,12 +109,12 @@ assert property ($rose(req) |-> req until ack);
 ```systemverilog
 // ANTI-PATTERN: one giant property, opaque on failure
 assert property (
-    $rose(req) |-> (gnt && !err) ##1 (data_ok throughout (busy until done))
+    $rose(req) |-> (gnt && !err) ##1 (data_ok throughout (busy[*1:$] ##1 done))
                    and ##[1:8] resp
 );
 // BETTER: split into focused, independently reported checks
 a_gnt:  assert property ($rose(req) |-> gnt && !err);
-a_data: assert property ($rose(req) ##1 busy |-> data_ok throughout (busy until done));
+a_data: assert property ($rose(req) ##1 busy |-> data_ok throughout (busy[*1:$] ##1 done));
 a_resp: assert property ($rose(req) |-> ##[1:8] resp);
 ```
 

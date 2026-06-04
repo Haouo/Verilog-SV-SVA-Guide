@@ -178,18 +178,21 @@ complete: at least one branch will always match.
 
 ```systemverilog
 always_comb begin
-    priority case (1'b1)          // one-hot check
+    priority case (1'b1)          // first match wins
         req[0]: grant = 4'b0001;
         req[1]: grant = 4'b0010;
         req[2]: grant = 4'b0100;
         req[3]: grant = 4'b1000;
+        default: grant = 4'b0000; // no request pending
     endcase
 end
 ```
 
 `priority case` is appropriate when a priority encoder or a first-match arbitration
 is exactly what is intended. It is not for cases that are genuinely exclusive —
-use `unique` there.
+use `unique` there. Note the `default`: without it, `priority` claims at least one
+`req` bit is always set, so an idle cycle (`req == 0`) would violate the declared
+completeness and leave `grant` undriven for that evaluation.
 
 ### `unique if` and `priority if`
 

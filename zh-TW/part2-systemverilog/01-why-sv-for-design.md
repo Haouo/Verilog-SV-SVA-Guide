@@ -126,16 +126,17 @@ end
 
 ```systemverilog
 always_comb begin
-    priority case (1'b1)          // one-hot check
+    priority case (1'b1)          // first match wins
         req[0]: grant = 4'b0001;
         req[1]: grant = 4'b0010;
         req[2]: grant = 4'b0100;
         req[3]: grant = 4'b1000;
+        default: grant = 4'b0000; // no request pending
     endcase
 end
 ```
 
-`priority case` 適用於優先級編碼器或第一匹配仲裁確實是設計意圖的情況。若各分支確實互斥，應使用 `unique`。
+`priority case` 適用於優先級編碼器或第一匹配仲裁確實是設計意圖的情況。若各分支確實互斥，應使用 `unique`。注意這裡的 `default`：少了它，`priority` 等於聲明 `req` 永遠至少有一個位元為 1，閒置週期（`req == 0`）會違反所聲明的完整性，且該次求值不會驅動 `grant`。
 
 ### `unique if` 與 `priority if`
 

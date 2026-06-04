@@ -104,8 +104,8 @@ Properties compose sequences into checkable temporal statements.
 | `s_nexttime p` | Strong form: endpoint must be reached | |
 | `always p` | `p` holds at every future point | `always $onehot(state)` |
 | `s_always [m:n] p` | Strong always over a finite window | |
-| `eventually p` | `p` holds at some future point (liveness) | `eventually done` |
-| `s_eventually p` | Strong eventually — endpoint is guaranteed | |
+| `eventually [m:n] p` | `p` holds within the window (weak form must be bounded) | `eventually [1:8] done` |
+| `s_eventually p` | Strong eventually — `p` must eventually hold (may be unbounded) | |
 | `p until q` | `p` holds until `q` holds (weak — `q` need not occur) | `busy until idle` |
 | `p s_until q` | Strong until — `q` must eventually hold | `busy s_until idle` |
 | `p until_with q` | `p` holds through the cycle `q` first holds | |
@@ -141,9 +141,9 @@ Procedural; evaluated the moment they execute, like a statement.
 
 | Statement | Timing | Use |
 |---|---|---|
-| `assert (expr)` | Observed region | Inside `always`, `initial`, tasks |
-| `assert final (expr)` | Final region | End-of-step checks |
-| `assert #0 (expr)` | Postponed region | Deferred: avoids glitch reads |
+| `assert (expr)` | Active region (inline, when reached) | Inside `always`, `initial`, tasks |
+| `assert final (expr)` | Reactive region | End-of-step checks |
+| `assert #0 (expr)` | Observed region | Deferred: avoids glitch reads |
 
 ---
 
@@ -156,7 +156,7 @@ Procedural; evaluated the moment they execute, like a statement.
 | `@(posedge clk)` inline | Per-assertion clock | `assert property (@(posedge clk) p)` |
 | `default clocking cb @(posedge clk); endclocking` | Module-wide default clock | Omit clock on each assertion |
 | `disable iff (expr)` | Suppress assertion while `expr` is true (typically reset) | `disable iff (!rst_n)` |
-| `$inferred_clock` | Clock inferred from context (inside `always_ff` or clocking block) | Rarely written explicitly |
+| `$inferred_clock` | Clock inferred from the assertion's context (e.g. `default clocking` or an enclosing procedure) | Rarely written explicitly |
 
 ---
 

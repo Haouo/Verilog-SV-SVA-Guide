@@ -45,12 +45,12 @@ end
 always_comb
     assert #0 (a == b);
 
-// Final-deferred: report in the Final region (end of simulation step set)
+// Final-deferred: report in the Reactive region, after #0 deferred checks
 always_comb
     assert final (a == b);
 ```
 
-`assert #0` 把回報推遲到同一步的 Observed 區域；`assert final` 推得更遠。兩者皆抑制由中間毛刺引起的回報，這使 deferred assertion 成為檢查組合不變式而不被暫態值誤報的首選形式。
+`assert #0` 把回報推遲到同一步的 Observed 區域；`assert final` 推得更遠，到 Reactive 區域。兩者皆抑制由中間毛刺引起的回報，這使 deferred assertion 成為檢查組合不變式而不被暫態值誤報的首選形式。
 
 ## concurrent assertion
 
@@ -86,7 +86,7 @@ cover  property (@(posedge clk) full);
 restrict property (@(posedge clk) mode == STREAM);
 ```
 
-`assert` 與 `assume` 的區別對 formal 至關重要：assertion 是*要證明的義務*，假設是*你被允許使用的 antecedent*。
+`assert` 與 `assume` 的區別對 formal 至關重要：assertion 是*要證明的義務*，假設是*你被允許使用的前提*。
 
 > **設計意圖。** 相同的 property 文字依關鍵字而陳述不同的意圖。`assert` 說「我的設計保證這一點」。
 > `assume` 說「環境向我承諾這一點」。`cover` 說「我想看到這件事至少發生一次」。
@@ -110,7 +110,7 @@ else
     $error("property p failed");   // fail action
 ```
 
-pass 動作為選用，常被省略。fail 動作是你回報失敗之處；若省略它，emulator 仍會發出預設錯誤，但帶有情境（週期、訊號值）的自訂訊息在除錯時有用得多。動作區塊在 Reactive 區域執行，於 property 評估之後。
+pass 動作為選用，常被省略。fail 動作是你回報失敗之處；若省略它，simulator 仍會發出預設錯誤，但帶有情境（週期、訊號值）的自訂訊息在除錯時有用得多。動作區塊在 Reactive 區域執行，於 property 評估之後。
 
 ## 嚴重性任務
 

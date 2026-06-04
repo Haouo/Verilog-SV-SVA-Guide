@@ -35,7 +35,7 @@ constraint、pitfall，以及 synthesis-aware context。
 
 | 功能 | Verilog (1364-2005) | SystemVerilog (1800-2023) | 助益說明 |
 |---|---|---|---|
-| 組合邏輯區塊 | `always @(*)` | `always_comb` | 無敏感度列表錯誤；工具自動推斷完整列表。Verilog 中 `@(*)` 漏寫信號是常見的閂鎖器錯誤。見[第二部 · 第 5 章](../part2-systemverilog/05-procedural-and-operators.md)。 |
+| 組合邏輯區塊 | `always @(*)` | `always_comb` | 無敏感度列表錯誤；工具自動推斷完整列表。Verilog 中 `@(*)` 漏寫訊號是常見的閂鎖器錯誤。見[第二部 · 第 5 章](../part2-systemverilog/05-procedural-and-operators.md)。 |
 | clock 邏輯區塊 | `always @(posedge clk)` | `always_ff @(posedge clk)` | 宣告意圖；lint 與合成工具可對 `always_ff` 內的非正反器內容發出警告。 |
 | 閂鎖器區塊 | 由 `always @(*)` 中不完整的 `if` 推斷 | `always_latch` | 明確宣告；閂鎖器是刻意的，而非意外。 |
 | 迴圈變數 | 必須在 `begin` 前宣告 | `for (int i = 0; ...)` — 內嵌宣告 | 迴圈寫法更簡短，較不易出錯。 |
@@ -68,7 +68,7 @@ constraint、pitfall，以及 synthesis-aware context。
 
 | 功能 | Verilog (1364-2005) | SystemVerilog (1800-2023) | 助益說明 |
 |---|---|---|---|
-| 埠組合 | 每個模組各自重複列出個別埠 | `interface` + `modport` | 匯流排信號只宣告一次；modport 依角色強制規定方向。見[第二部 · 第 4 章](../part2-systemverilog/04-interfaces-and-modports.md)。 |
+| 埠組合 | 每個模組各自重複列出個別埠 | `interface` + `modport` | 匯流排訊號只宣告一次；modport 依角色強制規定方向。見[第二部 · 第 4 章](../part2-systemverilog/04-interfaces-and-modports.md)。 |
 | 埠內協定 | 無 | 介面內可內嵌 assertion 與 task | 將協定規則 bind 於匯流排，而非散落在各模組中。 |
 
 ---

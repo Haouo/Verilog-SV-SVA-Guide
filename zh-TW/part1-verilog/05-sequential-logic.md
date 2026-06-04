@@ -69,7 +69,7 @@ end
 ```verilog
 always @(posedge clk) begin
     if (rst)
-        q <= '0;
+        q <= 1'b0;
     else
         q <= d;
 end
@@ -84,7 +84,7 @@ end
 ```verilog
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n)
-        q <= '0;
+        q <= 1'b0;
     else
         q <= d;
 end
@@ -106,7 +106,7 @@ end
 
 ```verilog
 module counter #(
-    parameter int WIDTH = 8
+    parameter WIDTH = 8
 ) (
     input  wire             clk,
     input  wire             rst_n,
@@ -115,7 +115,7 @@ module counter #(
 );
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n)
-            count <= '0;
+            count <= {WIDTH{1'b0}};
         else if (en)
             count <= count + 1'b1;
     end

@@ -94,9 +94,9 @@ Verilog 訊號的每個位元攜帶四種值之一：
 
 ```verilog
 module fifo #(
-    parameter int DEPTH = 16
+    parameter DEPTH = 16
 ) (/* ports */);
-    localparam int ADDR_W = $clog2(DEPTH);  // derived, not overridable
+    localparam ADDR_W = $clog2(DEPTH);  // derived, not overridable
     reg [ADDR_W-1:0] rd_ptr, wr_ptr;
 endmodule
 ```

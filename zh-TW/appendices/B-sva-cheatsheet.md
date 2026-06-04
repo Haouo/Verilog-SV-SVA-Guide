@@ -100,8 +100,8 @@ property 將 sequence 組合成可檢查的時序陳述。
 | `s_nexttime p` | 強式：必須到達終點 | |
 | `always p` | `p` 在每個未來時間點均成立 | `always $onehot(state)` |
 | `s_always [m:n] p` | 在有限窗口內的強式 always | |
-| `eventually p` | `p` 在某個未來時間點成立（liveness property） | `eventually done` |
-| `s_eventually p` | 強式 eventually — 保證到達終點 | |
+| `eventually [m:n] p` | `p` 在窗口內成立（弱式必須有界） | `eventually [1:8] done` |
+| `s_eventually p` | 強式 eventually — `p` 最終必須成立（可無界） | |
 | `p until q` | `p` 成立直到 `q` 成立（弱式 — `q` 不一定發生） | `busy until idle` |
 | `p s_until q` | 強式 until — `q` 最終必須發生 | `busy s_until idle` |
 | `p until_with q` | `p` 成立直到且包含 `q` 首次成立的那個週期 | |
@@ -137,9 +137,9 @@ label: assert property (@(posedge clk) disable iff (!rst_n) antecedent |-> conse
 
 | 陳述 | 時序區 | 用途 |
 |---|---|---|
-| `assert (expr)` | Observed 區 | 在 `always`、`initial`、task 內部 |
-| `assert final (expr)` | Final 區 | 時間步結束時的檢查 |
-| `assert #0 (expr)` | Postponed 區 | deferred assertion：避免讀取瞬變值 |
+| `assert (expr)` | Active 區（行內，執行到達時） | 在 `always`、`initial`、task 內部 |
+| `assert final (expr)` | Reactive 區 | 時間步結束時的檢查 |
+| `assert #0 (expr)` | Observed 區 | deferred assertion：避免讀取瞬變值 |
 
 ---
 
@@ -152,7 +152,7 @@ label: assert property (@(posedge clk) disable iff (!rst_n) antecedent |-> conse
 | `@(posedge clk)` 內嵌 | 單一 assertion 的 clock | `assert property (@(posedge clk) p)` |
 | `default clocking cb @(posedge clk); endclocking` | 模組範圍的預設 clock | 每個 assertion 可省略 clock 宣告 |
 | `disable iff (expr)` | 當 `expr` 為真時（通常為 reset 期間）抑制 assertion | `disable iff (!rst_n)` |
-| `$inferred_clock` | 從上下文推斷的 clock（在 `always_ff` 或 clocking block 內） | 鮮少明確撰寫 |
+| `$inferred_clock` | 從 assertion 的上下文推斷 clock（例如 `default clocking` 或外圍程序） | 鮮少明確撰寫 |
 
 ---
 

@@ -93,7 +93,7 @@ set for the length of an operation.
 `seq1` starts at or after `seq2` starts and ends at or before `seq2` ends:
 
 ```systemverilog
-// A single ack pulse must occur somewhere within the busy window
+// An ack must occur somewhere within the busy window
 sequence ack_in_busy;
     (ack[*1]) within (busy[*1:$]);
 endsequence
