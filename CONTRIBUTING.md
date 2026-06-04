@@ -12,6 +12,18 @@ it consistent and easy to maintain.
 - Keep technical terms in English in both editions. Give the Chinese gloss on
   first use, drawn from [GLOSSARY.md](GLOSSARY.md).
 
+## Explanation depth
+
+- Be concise, but not skeletal. A chapter should explain the design intuition
+  before relying on syntax.
+- Prefer one or two paragraphs of mental model before the first dense example.
+- Explain why a construct matters to RTL designers: hardware meaning, tool
+  behavior, debug value, or assertion value.
+- For SVA, state the intent in words before presenting the property or sequence.
+- In Traditional Chinese, keep common RTL/SystemVerilog/SVA terms in English
+  after the first gloss. Prefer natural mixed prose such as `concurrent
+  assertion 會在 Preponed region 取樣` over forced full translation.
+
 ## Chapter template
 
 Every chapter follows the same shape:

@@ -9,6 +9,18 @@
 - Apply the rules that keep a recursive property well-formed.
 - Recognize when recursion expresses intent more clearly than a long operator chain.
 
+## Designer's mental model
+
+Recursive properties describe intent that repeats its own shape. They are not
+needed for most RTL checks, but they can express unbounded or inductive behavior
+more naturally than a long chain of fixed delays. The designer must still provide
+a clear exit condition, or the recursion becomes impossible to reason about.
+
+Reach for recursion only when the protocol itself is self-similar: continue this
+rule until a terminating event, keep accepting the same form of progress, or
+prove a structure by induction. If a bounded window is enough, a simpler sequence
+is usually clearer.
+
 ## What a recursive property is
 
 A named property may mention itself in its own body. Each reference applies the same

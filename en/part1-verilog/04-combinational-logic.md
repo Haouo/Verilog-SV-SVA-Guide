@@ -9,6 +9,20 @@
 - Use `if` and `case` without inferring latches.
 - Understand `full_case` / `parallel_case` and why to avoid them.
 
+## Designer's mental model
+
+Combinational logic is a pure mapping from current inputs to current outputs. It
+has no memory. If a procedural block sometimes leaves an output unassigned, the
+only way hardware can preserve the old value is by creating storage, usually an
+unintended latch. That is why complete assignment is the central habit in this
+chapter.
+
+When reviewing combinational RTL, ask two questions before reading line by line:
+which signals are inputs to the decision, and does every path assign every
+output? The syntax can be `assign`, `always @(*)`, or later `always_comb`, but the
+hardware test is the same: no hidden state, no missing sensitivity, and no case
+branch that relies on a previous value by accident.
+
 ## Two ways to write combinational logic
 
 Combinational logic has outputs that depend only on present inputs, with no

@@ -9,6 +9,19 @@
 - Write `generate` blocks with `for`, `if`, and named scopes.
 - Build parameterized, reusable design modules.
 
+## Designer's mental model
+
+Parameterization moves design choices to elaboration time. A parameterized module
+is a template for a family of hardware, and `generate` selects or repeats
+structure before simulation or synthesis begins. Think of parameters as part of
+the module contract: callers choose legal values, and the module derives the
+internal widths and instances that follow from them.
+
+The danger is that a flexible module can become under-specified. Every parameter
+should have a meaning, range, and consequence. Derived `localparam` values are
+important because they turn caller choices into stable internal facts, making the
+implementation easier to read and harder to misuse.
+
 ## Typed parameters
 
 In Verilog, parameters are untyped integers. SystemVerilog allows parameters to

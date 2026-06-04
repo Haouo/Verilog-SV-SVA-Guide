@@ -10,6 +10,18 @@
 - Repeat with consecutive `[*n]`, goto `[->n]`, and non-consecutive `[=n]`.
 - Name a reusable sequence with the `sequence` construct.
 
+## Designer's mental model
+
+A sequence is the shape of behavior over time. It does not yet say whether the
+behavior is required; it says what pattern of events would count as a match. That
+separation is useful: first define the pattern, then use a property to say when
+that pattern must or must not occur.
+
+Think in timelines. `##1` means the next sampled clock, a range means a window,
+and repetition means the same condition occupies several possible cycles. When a
+sequence surprises you, draw the start point, endpoint, and every cycle that can
+participate in a match.
+
 ## What a sequence is
 
 A **sequence** (序列) describes events over clock cycles: a pattern of boolean

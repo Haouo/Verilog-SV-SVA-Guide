@@ -8,6 +8,19 @@
 - See why assertions are a designer's job, not only a verifier's.
 - Learn how the three parts fit together and how to read them.
 
+## Designer's mental model
+
+Read this guide as a bridge between three things you already do as a designer:
+describe hardware structure, choose coding forms that tools can interpret, and
+write down the promises the hardware must keep. Verilog and SystemVerilog cover
+the first two; SVA covers the third. The important habit is to ask, at every
+construct, "What hardware fact am I making explicit?"
+
+The chapters are intentionally not a language-lawyer tour. They are a path from
+RTL syntax to design intent. When a detail seems small, such as a width rule or a
+sampled-value rule, treat it as a future debug boundary: if the mental model is
+clear now, the waveform later becomes much easier to read.
+
 ## Who this guide is for
 
 This guide is for digital designers: engineers who write Register-Transfer Level

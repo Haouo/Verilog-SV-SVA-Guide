@@ -9,6 +9,18 @@
 - Collapse multiple matches to the earliest with `first_match`.
 - Use a sequence as a boolean event with `.triggered` and `.ended`.
 
+## Designer's mental model
+
+Sequence operations describe relationships between time patterns. `and`, `or`,
+and `intersect` are not just logical operators with longer names; they combine
+matches with different rules about start and end points. `throughout` and
+`within` then let one condition or pattern constrain another pattern's lifetime.
+
+The practical question is always about the protocol language you would use in a
+specification. Does one event happen while another remains true? Does an ack
+occur somewhere inside a busy window? Do two behaviors need to end together? Pick
+the operator that matches that sentence.
+
 ## Combining sequences
 
 Chapter 5 built single sequences. Real intent often combines several patterns —

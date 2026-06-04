@@ -9,6 +9,14 @@ need to write synthesizable hardware, and then treats **SystemVerilog Assertions
 Read the parts in order if you are new to the languages. If you already write
 RTL, jump straight to **Part III**.
 
+## Reading style
+
+This guide is meant to be read as a designer's working reference, not only as a
+syntax list. Each chapter now starts by naming the mental model behind the
+construct before moving into examples and pitfalls. If you are skimming, read
+that mental-model section first; it tells you what the syntax is trying to make
+explicit.
+
 ## Table of contents
 
 ### Part 0 — Orientation

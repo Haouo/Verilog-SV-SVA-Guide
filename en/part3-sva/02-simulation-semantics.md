@@ -10,6 +10,18 @@
 - Use the clock as the single reference for assertion timing.
 - Predict what a concurrent assertion sees versus what procedural code sees.
 
+## Designer's mental model
+
+Concurrent assertions observe a sampled version of the design. They do not simply
+read whatever a procedural block most recently assigned in the same time slot.
+Sampling in the Preponed region makes the assertion see the value that existed at
+the clock edge, which matches how flip-flops reason about synchronous logic.
+
+This timing model is the foundation for almost every SVA surprise. If an
+assertion seems one cycle off, or `$past` seems to disagree with a waveform, ask
+which event region each value came from. Once sampling is clear, implication,
+reset disabling, and local variables become much less mysterious.
+
 ## The problem sampling solves
 
 Within a single simulation time step, many things happen: clock edges fire,

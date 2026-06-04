@@ -9,6 +9,16 @@
 - 透過介面對模組進行例化和連接。
 - 理解介面對設計本身的益處，而不僅限於驗證用途。
 
+## 設計者 mental model
+
+interface 是 protocol bundle，不只是很多 port 的 shortcut。它替本來就應該一起移動的 signal 命名，
+也可以把 protocol-specific helper 或 assertion 放在 signal 附近。`modport` 則 state 某個 module
+在這個 protocol 裡扮演哪個 role。
+
+當 bundle 的 meaning 不只是 convenience 時，就適合用 interface：ready/valid、request/grant、
+address/data/control，或其他 recurring relationship。如果 signal 彼此無關，interface 反而可能藏住
+clarity；如果它們形成 protocol，interface 會讓 protocol 在 module boundary 變明顯。
+
 ## 介面解決的問題
 
 典型的匯流排或握手（handshake）協定包含多個總是一起傳遞的訊號：資料、位址、valid、ready、寫入致能、位元組致能等等。在普通 Verilog 中，每個訊號都是參與該協定的每個模組上的一個獨立埠。連接兩個模組意味著逐一連接每個訊號。在協定中增加一個訊號，就必須編輯每個模組和每個例化——這是繁瑣且容易出錯的過程。
@@ -178,7 +188,7 @@ simple_bus #(.DATA_W(8),  .ADDR_W(8))  narrow_bus ();
 ## 常見陷阱
 
 - **埠宣告中缺少 `modport`。** 若沒有 modport，模組接受整個介面而不進行方向檢查，任何訊號都可以從任意一側驅動，工具無法驗證正確性。請一律指定 modport。
-- **驅動 `input` modport 訊號。** 若 `bus.data` 在 modport 中宣告為 `input`，對其進行指定是 modport 違規。Lint 工具會報告此問題；部分模擬器只在闡述時發出警告。請將 modport 違規視為錯誤。
+- **驅動 `input` modport 訊號。** 若 `bus.data` 在 modport 中宣告為 `input`，對其進行指定是 modport 違規。Lint 工具會報告此問題；部分simulator只在闡述時發出警告。請將 modport 違規視為錯誤。
 - **例化介面時沒有寫 `()`。** `simple_bus bus_if;` 是型別 `simple_bus` 的宣告，但並未建立具有實際儲存的例化。請寫 `simple_bus bus_if ();` 來例化。
 - **在介面中放入合成邏輯。** 介面可包含 `function` 和 `task` 定義，但可合成邏輯應存在於模組中。保持介面作為純粹的連接描述器。
 - **工具支援缺口。** 並非所有合成工具都同等支援每個介面特性。參數化介面和介面陣列可能需要變通方案。請儘早驗證工具支援情況。

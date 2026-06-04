@@ -10,6 +10,16 @@
 - 理解 packed 與 unpacked 陣列的差異。
 - 知道在可合成設計中，2-state 型別（`bit`、`int`）與 4-state 型別（`logic`）各自何時適用。
 
+## 設計者 mental model
+
+SystemVerilog type 讓你命名 design concept，而不只是寫 bit range。`enum` 表示這些 encoding 是
+state 或 command；`struct` 表示這些 field 會一起移動；`typedef` 讓這個 meaning 可以重用，不必
+每次重寫 shape。type 變成一種 lightweight documentation，而且 tool 也能 check。
+
+tradeoff 是 designer 仍然要記得底下的 hardware。packed struct 是固定 layout 的 bits，unpacked
+array 是 element collection，2-state type 可能隱藏 `x` information。用更強的 type 來 state intent，
+但永遠要問：最後 synthesis 或 simulation 看到的是哪些 bit？
+
 ## `typedef` — 為型別命名
 
 `typedef` 為任何型別表達式賦予一個名稱。這和 C 語言的概念相同，目的也相同：用有意義的名稱取代結構性描述。
@@ -64,7 +74,7 @@ case 表達式使用符號名稱。工具檢查每個 enum 成員是否都有對
 
 ### `enum` 方法
 
-SystemVerilog 為 enum 變數提供內建方法，供模擬和測試平台使用。在可合成程式碼中，enum 操作僅限於指定和比較；`first()`、`last()`、`next()`、`prev()`、`name()` 等方法不保證可合成，應留在驗證程式碼中使用。
+SystemVerilog 為 enum 變數提供內建方法，供simulation和測試平台使用。在可合成程式碼中，enum 操作僅限於指定和比較；`first()`、`last()`、`next()`、`prev()`、`name()` 等方法不保證可合成，應留在驗證程式碼中使用。
 
 ## `struct` — 將相關訊號組合
 
@@ -184,9 +194,9 @@ bit [7:0]  mask;       // 8-bit, 2-state
 
 - 訊號是迴圈變數、計數器，或不會合法地保持 X 或 Z 的算術量。
 - 在闡述（elaboration）時計算 parameter 或 localparam 值。
-- 訊號位於測試平台內部（模擬專用算術很常見）。
+- 訊號位於測試平台內部（simulation專用算術很常見）。
 
-所有由硬體驅動的 RTL 埠和內部訊號都應使用 4-state `logic`。原因在於：若一個 `logic` 訊號未連接或未初始化，模擬器會傳播 X 值，提醒你問題所在。而 `bit` 訊號會悄悄初始化為 0，隱藏未初始化的狀態。在 RTL 中，隱藏 X 是危險的。
+所有由硬體驅動的 RTL 埠和內部訊號都應使用 4-state `logic`。原因在於：若一個 `logic` 訊號未連接或未初始化，simulator會傳播 X 值，提醒你問題所在。而 `bit` 訊號會悄悄初始化為 0，隱藏未初始化的狀態。在 RTL 中，隱藏 X 是危險的。
 
 ```systemverilog
 // GOOD: logic for hardware signals — X propagation catches mistakes

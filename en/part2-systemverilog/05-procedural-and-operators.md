@@ -10,6 +10,20 @@
 - Cast values correctly with the static cast `'` and with `$cast`.
 - Know which constructs are synthesizable and which are simulation-only.
 
+## Designer's mental model
+
+SystemVerilog procedural features are useful when they reduce accidental detail.
+Inline loop variables, `foreach`, casts, shorthand assignments, and `case inside`
+can make the intended operation clearer than older Verilog forms. The best use is
+not shorter code alone, but code whose structure matches the decision or data
+movement being described.
+
+Because these constructs are more expressive, they also deserve more deliberate
+review. Ask whether a cast is documenting a real conversion or silencing a type
+warning, whether a shorthand assignment is safe for the block's timing, and
+whether `case inside` is expressing a real pattern or hiding don't-care behavior
+that should be checked.
+
 ## Enhanced loop constructs
 
 ### `do-while`

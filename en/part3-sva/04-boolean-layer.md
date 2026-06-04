@@ -10,6 +10,18 @@
 - Check one-hot, count, and unknown conditions with `$onehot`, `$onehot0`,
   `$countones`, `$isunknown`.
 
+## Designer's mental model
+
+The Boolean layer is where SVA talks about facts at a sampled clock edge. Before
+you write temporal behavior, you need reliable one-cycle predicates: did a signal
+rise, did a vector stay stable, is a state one-hot, did any bit become unknown?
+These predicates are the atoms of larger properties.
+
+Because they use sampled values, these functions are usually about the design as
+seen by flip-flops, not about transient procedural updates. This is why `$rose`,
+`$past`, and `$stable` are so valuable: they let a property speak in clocked
+facts instead of waveform guesses.
+
 ## The boolean layer
 
 SVA is built in layers. At the bottom is the **boolean layer**: ordinary

@@ -9,6 +9,17 @@
 - 建立階層，並理解它如何闡述（elaborate）。
 - 傳遞參數讓模組可重複使用。
 
+## 設計者 mental model
+
+`module` 不只是文字容器，而是 design 用來命名一塊 hardware、宣告 boundary 上有哪些 signal、
+並讓 elaboration 建出 instance hierarchy 的單位。讀一個 module 時，先把 port list 和
+parameter 當成 contract 讀，再往下看 implementation。
+
+好的 hierarchy 會降低一次需要理解的 context。caller 不應該需要知道 child block 裡每個
+internal register；它應該只需要知道 ports、parameter 的意義，以及 timing expectation。
+所以本章不只講 `module ... endmodule` syntax，也花時間講 naming、instantiation 和
+parameterization。
+
 ## 模組是設計的基本單位
 
 `module` 是 Verilog 的基本建構單元。它有名稱、一份埠列表，以及描述行為或結構的主體。
@@ -65,7 +76,7 @@ endmodule
 ## 階層與闡述
 
 工具讀入設計時會執行*闡述（elaboration）*：選定頂層模組、建立其實例，再建立這些實例的
-實例，依此類推，直到整棵樹建構完成。參數會在這個步驟解析，發生在模擬或合成開始之前。
+實例，依此類推，直到整棵樹建構完成。參數會在這個步驟解析，發生在simulation或合成開始之前。
 結果是一個完全展開、由具體模組構成的階層。
 
 某模組內的訊號，除非透過埠，否則在其他模組中不可見。這是刻意的設計。埠是模組與其
@@ -102,8 +113,8 @@ adder #(.WIDTH(16)) u_adder16 (.a(a16), .b(b16), .sum(sum17));
 - **位置連接埠。** 埠變動時會悄悄接錯。請一律以名稱連接。
 - **在同一模組混用 ANSI 與非 ANSI 樣式。** 選定 ANSI 並保持一致。
 - **意外的隱含線網。** 未宣告的訊號會變成 1 位元的 `wire`。埠名打錯字可能產生一條
-  多餘的 1 位元線網與難找的錯誤。（線網宣告見第 2 章；可考慮以 \`\`default_nettype none\`
-  關閉隱含線網。）
+ 多餘的 1 位元線網與難找的錯誤。（線網宣告見第 2 章；可考慮以 \`\`default_nettype none\`
+ 關閉隱含線網。）
 - **寫死寬度。** 會妨礙重複使用。從一開始就把尺寸參數化。
 
 ## 小結

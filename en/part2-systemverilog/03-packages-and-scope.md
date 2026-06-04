@@ -9,6 +9,18 @@
 - Understand `$unit` scope and why explicit packages are preferred.
 - Use packages to share definitions across modules without copy-paste.
 
+## Designer's mental model
+
+A package is a named home for shared design facts. If several modules agree on a
+bus width, command encoding, or struct shape, that agreement should live in one
+place instead of being copied into every file. Importing a package is a module's
+visible claim that it participates in that shared contract.
+
+Scope rules are about controlling where names come from. Explicit imports and
+qualified names make dependencies readable; `$unit` and broad wildcard imports
+can make them invisible. The more reusable the block, the more valuable it is to
+make its package dependencies obvious.
+
 ## The problem packages solve
 
 In a Verilog design, a type defined in one module is not visible in another.

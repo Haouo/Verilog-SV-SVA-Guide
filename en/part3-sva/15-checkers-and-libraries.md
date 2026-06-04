@@ -10,6 +10,18 @@
 - Know the standard reusable assertion libraries: OVL and the Accellera SVA library.
 - Package your own assertions for reuse across a project.
 
+## Designer's mental model
+
+A checker is a reusable assertion container with a named interface. It lets a
+team package a protocol rule once and instantiate it wherever the same rule
+appears. A library then becomes a vocabulary of design intent: no overflow,
+stable until accept, one-hot, latency bounded, and so on.
+
+The useful interface of a checker is small but precise. It should expose the
+signals, parameters, clocking, and reset needed to state the rule, while hiding
+the SVA details that callers should not rewrite. Reuse is valuable only if the
+checker name and parameters make the intent unmistakable.
+
 ## The checker construct
 
 A **checker** (checker) is a SystemVerilog container built specifically to hold

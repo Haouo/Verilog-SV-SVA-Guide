@@ -6,6 +6,17 @@ A quick-reference comparing Verilog (IEEE 1364-2005) with the SystemVerilog
 design improvements covered in Part II. For each feature, the table states what
 changed and why it matters to a designer writing synthesizable RTL.
 
+## How to use this appendix
+
+Use this appendix as a decision aid when converting Verilog habits into
+SystemVerilog design habits. The table is not saying every older construct is
+wrong; it is showing where SystemVerilog can make the same intent more explicit
+and easier for tools to check.
+
+When you adopt one of these features, follow the link back to the chapter before
+using it broadly. The short table gives the motivation, but the chapter gives the
+constraints, pitfalls, and synthesis-aware context.
+
 ---
 
 ## Data types

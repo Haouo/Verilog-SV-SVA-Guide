@@ -15,6 +15,18 @@
 - Drive a clock and a reset to exercise your own block.
 - Know where the line between design and verification falls.
 
+## Designer's mental model
+
+A simple testbench is a way to create stimulus and observe behavior, not proof
+that the RTL is correct. It can show that one scenario worked, but it does not by
+itself state the design rule that should always hold. That missing rule is where
+assertions become useful.
+
+For a designer, the value of a small testbench is speed and visibility. It lets
+you bring up a block, see waveforms, and catch obvious wiring or reset mistakes.
+The moment you find yourself repeatedly looking at a waveform to decide whether
+something is "right," you have found a candidate assertion.
+
 ## What a testbench is
 
 A testbench is non-synthesizable code that instantiates your design (the

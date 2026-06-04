@@ -9,6 +9,16 @@
 - 在同步重置與非同步重置之間做出選擇。
 - 避免阻塞式/非阻塞式指定的經典競態（race）問題。
 
+## 設計者 mental model
+
+sequential logic 是 time 變成 state 的地方。clock edge sample input value，並 commit 新的
+register value；edge 之間 register 維持不變。code form 應該讓這個 sampling story 很明顯，
+所以 clocked logic 預設使用 non-blocking assignment。
+
+reset 也是同一個 story 的一部分。它定義 design 在 initialization 或 recovery 之後承諾進入哪個
+state。reset branch 不是裝飾，而是在回答：「normal traffic 開始前，哪些 value 是 safe 的？」
+如果這個答案不清楚，後面的 assertion 和 testbench 也會不清楚。
+
 ## 推斷正反器
 
 循序邏輯（sequential logic）具有在時脈緣更新的狀態。透過由時脈緣觸發的 `always` 區塊，可推斷出正反器：
@@ -28,7 +38,7 @@ end
 - **阻塞式（`=`）** 立即按順序執行，如同軟體語句。
 - **非阻塞式（`<=`）** 先取樣所有右側值，再在時間步結束時統一更新所有左側目標。
 
-非阻塞式指定模擬了真實正反器的行為：所有正反器在時脈緣同時取樣輸入，再統一更新。考慮一個移位暫存器（shift register）：
+非阻塞式指定simulation了真實正反器的行為：所有正反器在時脈緣同時取樣輸入，再統一更新。考慮一個移位暫存器（shift register）：
 
 ```verilog
 // Correct: all three FFs sample, then all update
@@ -90,7 +100,7 @@ end
 
 ## 阻塞式/非阻塞式指定的競態
 
-若在同一個時間步內，一個區塊以 `=` 指定某變數，另一個區塊讀取它，結果就取決於模擬器執行各區塊的順序——這就是競態。遵循上述兩條規則（帶時脈用 `<=`，組合邏輯用 `=`，且同一訊號絕不混用）可消除這類競態。不要從兩個 `always` 區塊指定同一個變數，也不要對同一個變數混用 `=` 與 `<=`。
+若在同一個時間步內，一個區塊以 `=` 指定某變數，另一個區塊讀取它，結果就取決於simulator執行各區塊的順序——這就是競態。遵循上述兩條規則（帶時脈用 `<=`，組合邏輯用 `=`，且同一訊號絕不混用）可消除這類競態。不要從兩個 `always` 區塊指定同一個變數，也不要對同一個變數混用 `=` 與 `<=`。
 
 ## 完整的暫存器範例
 

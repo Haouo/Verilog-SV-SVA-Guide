@@ -10,6 +10,17 @@
 - Reason about multiclock assertions and clock flow across `##` boundaries.
 - Sample on the correct edge for the design's convention.
 
+## Designer's mental model
+
+Clocking tells an assertion which timeline to use. Reset tells it when the rule
+is not supposed to apply. Without those two pieces, even a correct temporal
+property can fail during initialization or sample the wrong edge of a protocol.
+
+Treat `disable iff` as part of the contract, not as an afterthought. During reset,
+some signals are intentionally unstable or being forced into known values. After
+reset releases, the assertion resumes and the design's normal promises matter
+again. The reset expression should match that design story.
+
 ## The assertion clock
 
 Every concurrent assertion needs a clock. The clock fixes when sampling happens

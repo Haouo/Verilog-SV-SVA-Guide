@@ -10,6 +10,18 @@
 - Understand per-attempt scoping and the flow of local-variable values.
 - Avoid the sampling and flow pitfalls that make local variables surprising.
 
+## Designer's mental model
+
+Local variables let an assertion remember the value associated with one attempt.
+That is the key to data-carrying intent: not merely "some response happened," but
+"the response for this request matches the data sampled when this request
+started." Each concurrent attempt gets its own variable storage.
+
+This makes local variables powerful and easy to misunderstand. The assignment
+happens in the sampled assertion world, not as an RTL procedural update. When a
+property has overlapping attempts, draw each attempt separately and track which
+sampled value belongs to which consequent.
+
 ## Why local variables exist
 
 Implication relates a trigger to a response, but often the response must be checked

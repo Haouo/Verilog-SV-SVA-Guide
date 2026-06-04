@@ -5,6 +5,13 @@
 An annotated bibliography mapping the guide's three parts to their governing
 sources and key supplementary literature.
 
+## How to use this appendix
+
+References are the backstop for the guide's technical claims. Use the standards
+for normative language rules, and use books or papers for design practice,
+examples, and interpretation. When a chapter grows more detailed, this appendix
+is where the supporting source should become visible.
+
 ---
 
 ## Governing standards

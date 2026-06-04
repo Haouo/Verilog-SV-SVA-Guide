@@ -9,6 +9,19 @@
 - Write action blocks for the pass and fail branches of an assertion.
 - Pick the right severity task: `$error`, `$fatal`, `$warning`, `$info`.
 
+## Designer's mental model
+
+The same Boolean or temporal expression changes meaning depending on the
+assertion kind and keyword around it. An immediate assertion checks a condition at
+a procedural point. A concurrent assertion checks behavior over clocked time.
+`assert`, `assume`, `cover`, and `restrict` then say whether the expression is a
+design guarantee, an environment promise, or a reachability question.
+
+This distinction matters most when moving between simulation and formal. In
+simulation, an `assume` may act like a check or constraint depending on the tool.
+In formal, a bad `assume` can remove the very behavior you needed to find. Treat
+the keyword as part of the intent, not as a wrapper around a property.
+
 ## Immediate assertions
 
 An **immediate assertion** (即時斷言) is a procedural statement. It evaluates its

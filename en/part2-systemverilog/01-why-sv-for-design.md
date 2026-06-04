@@ -10,6 +10,18 @@
 - Know how the specialized `always` blocks enable tool-checked design rules.
 - Apply `unique` and `priority` to case statements to document decision intent.
 
+## Designer's mental model
+
+SystemVerilog improves RTL by letting code state intent more directly. `logic`
+removes much of the `wire`/`reg` ceremony, specialized `always_*` blocks declare
+what kind of hardware a process should infer, and `unique` or `priority` tells
+tools what the designer believes about a decision tree.
+
+The point is not to use newer syntax for its own sake. The point is to move
+knowledge out of comments and coding folklore into constructs that simulators,
+linters, and synthesis tools can check. A SystemVerilog construct earns its place
+when it reduces ambiguity about the hardware being described.
+
 ## The problem with Verilog's types
 
 Verilog requires you to declare a signal as either `wire` or `reg`. The

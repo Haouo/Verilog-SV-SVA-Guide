@@ -10,6 +10,18 @@
 - Instantiate and connect modules through an interface.
 - Understand the design benefits of interfaces independent of verification use.
 
+## Designer's mental model
+
+An interface is a protocol bundle, not just a shortcut for many ports. It gives a
+name to signals that are meant to travel together and can place protocol-specific
+helpers or assertions near those signals. A `modport` then states which role a
+module plays in that protocol.
+
+Use interfaces when the bundle has meaning beyond convenience: ready/valid,
+request/grant, address/data/control, or another recurring relationship. If the
+signals are unrelated, an interface can hide clarity. If they form a protocol,
+the interface makes that protocol visible at the module boundary.
+
 ## The problem interfaces solve
 
 A typical bus or handshake protocol involves several signals that always travel

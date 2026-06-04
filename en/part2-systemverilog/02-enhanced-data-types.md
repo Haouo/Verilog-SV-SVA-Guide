@@ -11,6 +11,19 @@
 - Know when 2-state types (`bit`, `int`) are safe and when 4-state (`logic`) is
   required in synthesizable design.
 
+## Designer's mental model
+
+SystemVerilog types let you name design concepts instead of only bit ranges. An
+`enum` says these encodings are states or commands; a `struct` says these fields
+travel together; a `typedef` lets that meaning be reused without rewriting the
+shape every time. Types become lightweight documentation that tools can also
+check.
+
+The tradeoff is that the designer must still remember the hardware underneath.
+A packed struct is bits in a fixed layout, an unpacked array is a collection of
+elements, and a 2-state type can hide `x` information. Use stronger types to
+state intent, but always ask what bits will be synthesized or simulated.
+
 ## `typedef` — naming a type
 
 `typedef` gives a name to any type expression. This is the same idea as in C,

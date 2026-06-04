@@ -9,11 +9,23 @@
 - 理解四態值系統，以及 `x` 與 `z` 的含義。
 - 使用 `parameter` 與 `localparam` 定義具位元寬度的具名常數。
 
+## 設計者 mental model
+
+Verilog 的 type 與 value 主要是在說：這個 bit pattern 是由哪種 object drive 或保存。`wire`
+是由 driver resolve 出來的 connection；`reg` 是 procedural variable，保存最後一次 assigned
+value。這兩個字本身不保證「實體導線」或「flip-flop」，所以要永遠把 type 跟 assignment
+方式連在一起看。
+
+第二個 mental model 是 width。Hardware 沒有抽象 integer；它只有固定數量的 bit。每個 literal、
+vector、concatenation、extension rule 都是在決定有多少 bit，以及 `x`/`z` 會怎麼傳播。
+很多 Verilog bug 不是來自冷門 syntax，而是 value 比 designer 以為的多一 bit、少一 bit、
+帶 signedness、或含 unknown。
+
 ## 線網與變數
 
 Verilog 有兩類資料物件，這種區分常令初學者困惑，因為它與軟體直覺不符。
 
-- **線網（net）**（最常見的型別是 `wire`）模擬實體連接。它不儲存數值，而是反映驅動它的訊號。線網必須被持續驅動——由模組輸出、基本邏輯元件，或 `assign` 語句。
+- **線網（net）**（最常見的型別是 `wire`）simulation實體連接。它不儲存數值，而是反映驅動它的訊號。線網必須被持續驅動——由模組輸出、基本邏輯元件，或 `assign` 語句。
 - **變數（variable）**（Verilog 中型別為 `reg`）持有數值，直到某個程序性語句指定新值為止。儘管名稱如此，`reg` 不一定對應硬體暫存器（register）。它只是一個在 `always` 或 `initial` 區塊中被指定的變數。
 
 可合成（synthesizable）RTL 的使用規則：
@@ -57,7 +69,7 @@ Verilog 訊號的每個位元攜帶四種值之一：
 - `z` 表示沒有任何東西驅動該線網——三態（tri-state）匯流排，或浮接輸入。
 - `x` 表示數值未知——未初始化的暫存器、多重驅動衝突，或讀取未定義值的結果。
 
-在模擬中，`x` 常指示真實的錯誤：從未被重置的暫存器，或競態（race）。遇到非預期的 `x`，應追蹤其根源，而非加以遮蔽。斷言（assertion，第三部）是在不應出現 `x` 之處捕捉它的有效手段。
+在simulation中，`x` 常指示真實的錯誤：從未被重置的暫存器，或競態（race）。遇到非預期的 `x`，應追蹤其根源，而非加以遮蔽。斷言（assertion，第三部）是在不應出現 `x` 之處捕捉它的有效手段。
 
 ## 字面值
 
@@ -106,7 +118,7 @@ endmodule
 
 - 線網（`wire`）攜帶被驅動的值；變數（`reg`）持有被指定的值。
 - 向量使用 `[msb:lsb]`，慣例上 LSB 為 0。
-- 四種狀態 `0 1 x z` 模擬真實硬體；非預期的 `x` 意味著問題。
+- 四種狀態 `0 1 x z` simulation真實硬體；非預期的 `x` 意味著問題。
 - 撰寫帶寬度的字面值，並以 `parameter` / `localparam` 命名常數。
 
 ---

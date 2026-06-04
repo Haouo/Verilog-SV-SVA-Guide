@@ -10,6 +10,19 @@
 - Pass design signals into a bound checker through its ports.
 - Choose a placement style that fits both design and verification ownership.
 
+## Designer's mental model
+
+Placement decides who owns an assertion and what it can see. Inline assertions
+live with the RTL and are strongest when they express the designer's own local
+contract. Bound assertion modules are strongest when checks must attach to an
+existing design without editing it, or when a verification environment wants to
+keep its checkers separate.
+
+`bind` is powerful because it separates source ownership from observation. It is
+also easy to misuse if the bound module relies on fragile internal names or
+unclear hierarchy paths. Good placement makes the assertion's authority and
+visibility obvious.
+
 ## Where assertions go
 
 A concurrent assertion can sit almost anywhere a continuous statement can: in the

@@ -9,6 +9,21 @@
 - Understand the four-state value system and what `x` and `z` mean.
 - Use `parameter` and `localparam` for sized, named constants.
 
+## Designer's mental model
+
+Types and values in Verilog are mostly about what kind of object can drive or
+store a bit pattern. A `wire` is a connection resolved from drivers; a `reg` is a
+procedural variable that holds its last assigned value. Neither word by itself
+means "a physical wire" or "a flip-flop" in every context, so always connect the
+type back to how the object is assigned.
+
+The second mental model is width. Hardware does not have abstract integers; it
+has a fixed number of bits. Every literal, vector, concatenation, and extension
+rule is a way of deciding how many bits exist and what happens to `x` and `z`.
+Most surprising Verilog bugs are not caused by exotic syntax, but by a value
+being one bit wider, narrower, signed, or unknown when the designer assumed
+otherwise.
+
 ## Nets versus variables
 
 Verilog has two families of data objects, and the split confuses newcomers

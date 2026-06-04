@@ -17,16 +17,17 @@ this file tells contributors what still needs review.
 
 ## Current matrix
 
-All current chapters are drafted and mirrored. The next editorial pass should
-focus on source-checking and reviewer notes.
+All current chapters are drafted, mirrored, and have received a first
+narrative-deepening pass. The next editorial pass should focus on source-checking
+and reviewer notes.
 
 | Section | Files | Editorial state | Next useful pass |
 |---|---:|---|---|
-| Orientation | 2 | Drafted, mirrored | Source-check framing and audience claims |
-| Part I - Verilog for Design | 16 | Drafted, mirrored | Check examples against IEEE 1364-2005 |
-| Part II - SystemVerilog for Design | 14 | Drafted, mirrored | Check design-subset guidance against IEEE 1800-2023 |
-| Part III - SystemVerilog Assertions | 32 | Drafted, mirrored | Check SVA semantics, examples, and edge cases |
-| Appendices | 8 | Drafted, mirrored | Check reference completeness and quick-reference accuracy |
+| Orientation | 2 | Drafted, mirrored, deepened | Source-check framing and audience claims |
+| Part I - Verilog for Design | 16 | Drafted, mirrored, deepened | Check examples against IEEE 1364-2005 |
+| Part II - SystemVerilog for Design | 14 | Drafted, mirrored, deepened | Check design-subset guidance against IEEE 1800-2023 |
+| Part III - SystemVerilog Assertions | 32 | Drafted, mirrored, deepened | Check SVA semantics, examples, and edge cases |
+| Appendices | 8 | Drafted, mirrored, deepened | Check reference completeness and quick-reference accuracy |
 | Shared glossary | 1 | Drafted | Expand when new translated terms appear |
 
 ## Chapter checklist

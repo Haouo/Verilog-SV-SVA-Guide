@@ -1,20 +1,30 @@
-# 第三部 · 1. 為何需要斷言
+# 第三部 · 1. 為何需要 assertion
 
-[← 驗證功能概覽](../part2-systemverilog/07-verification-features-overview.md) · [目錄](../README.md) · [下一章：模擬語意 →](02-simulation-semantics.md)
+[← 驗證功能概覽](../part2-systemverilog/07-verification-features-overview.md) · [目錄](../README.md) · [下一章：simulation semantics →](02-simulation-semantics.md)
 
 ## 學習目標
 
-- 說明 RTL 所描述的內容與斷言所描述的內容之間的差異。
-- 解釋基於斷言的驗證（Assertion-Based Verification, ABV）以及為何它屬於設計者的工作。
-- 將斷言定位於設計流程中：模擬、形式化、與模擬器（emulation）。
-- 一眼分辨即時斷言與並行斷言。
+- 說明 RTL 所描述的內容與 assertion 所描述的內容之間的差異。
+- 解釋 Assertion-Based Verification (ABV) 以及為何它屬於設計者的工作。
+- 將 assertion 定位於設計流程中：simulation、formal、與 emulator（emulation）。
+- 一眼分辨 immediate assertion 與 concurrent assertion。
 - 理解「在源頭失敗」為何優於「在下游失敗」。
 
-## RTL 說明「如何做」；斷言說明「什麼必須為真」
+## 設計者 mental model
 
-一段 RTL 描述硬體*如何*計算出結果。它本身並不說明那個結果*應該*是什麼。設計意圖（design intent，設計意圖）——例如請求一定會被確認、狀態向量是 one-hot、FIFO 永不溢位——存在於你的腦中、規格書中，或註解裡。這些地方都無法由工具檢查。
+assertion 是 executable intent。它不取代 RTL、testbench 或 specification；它把三者接起來，
+用一條 rule 說明 design 必須遵守什麼。最好的 assertion 夠小，失敗時只有一個清楚理由；也夠靠近
+RTL，讓 failing cycle 本身就能解釋 bug。
 
-**斷言**（assertion，斷言）是對預期行為可檢查的陳述。它把意圖從你的腦中移入原始碼，化為模擬器或形式化工具可自動評估的形式。RTL 與斷言從兩個角度描述同一個設計：RTL 說明它如何行為，斷言說明什麼必須成立。當兩者不一致時，斷言便會觸發，告訴你 RTL 錯了。
+先從 English/中文規則開始，再寫 syntax。「request 必須在四個 cycle 內被 answer」是 intent；
+`req |-> ##[1:4] ack` 是其中一種 encoding。如果原始句子 fuzzy，property 也會 fuzzy。好的 SVA
+從 precise design sentence 開始。
+
+## RTL 說明「如何做」；assertion 說明「什麼必須為真」
+
+一段 RTL 描述硬體*如何*計算出結果。它本身並不說明那個結果*應該*是什麼。**design intent**——例如請求一定會被確認、狀態向量是 one-hot、FIFO 永不溢位——存在於你的腦中、規格書中，或註解裡。這些地方都無法由工具檢查。
+
+**assertion**是對預期行為可檢查的陳述。它把意圖從你的腦中移入原始碼，化為 simulator 或 formal tool 可自動評估的形式。RTL 與 assertion 從兩個角度描述同一個設計：RTL 說明它如何行為，assertion 說明什麼必須成立。當兩者不一致時，assertion 便會觸發，告訴你 RTL 錯了。
 
 ```systemverilog
 // RTL: how the grant is produced
@@ -27,33 +37,33 @@ assert property (@(posedge clk) gnt |-> $past(req));
 
 `always_ff` 區塊是實作。`assert property` 是契約。兩者互不取代。
 
-## 基於斷言的驗證
+## Assertion-Based Verification
 
-**基於斷言的驗證（ABV，基於斷言的驗證）** 是一套把斷言置於設計檢查核心的方法論。它不只依賴在邊界比對輸出的測試平台，而是在整個設計中嵌入許多小而局部的檢查。每個檢查陳述關於某一訊號或介面的一項事實，且貼近該事實產生之處。
+**Assertion-Based Verification (ABV)** 是一套把 assertion 置於設計檢查核心的方法論。它不只依賴在邊界比對輸出的測試平台，而是在整個設計中嵌入許多小而局部的檢查。每個檢查陳述關於某一訊號或介面的一項事實，且貼近該事實產生之處。
 
-這對設計者尤其重要，因為**你擁有意圖**。你知道每個埠上的協定、每個狀態暫存器的編碼、每個計數器必須維持的不變式（invariant）。驗證工程師可從規格書重新發現其中一部分，但你在撰寫程式碼時就已掌握這些知識。此時就把它捕捉下來——作為緊鄰邏輯的斷言——能趁記憶猶新時記錄它，並將它變成隨模組同行、由機器持續檢查的永久契約。
+這對設計者尤其重要，因為**你擁有意圖**。你知道每個埠上的協定、每個狀態暫存器的編碼、每個計數器必須維持的不變式（invariant）。驗證工程師可從規格書重新發現其中一部分，但你在撰寫程式碼時就已掌握這些知識。此時就把它捕捉下來——作為緊鄰邏輯的 assertion——能趁記憶猶新時記錄它，並將它變成隨模組同行、由機器持續檢查的永久契約。
 
 ABV 在三方面帶來回報：
 
 - **可觀測性。** 違反不變式的錯誤會在不變式處被捕捉，而非在數個週期後、當被破壞的值終於抵達輸出時才被發現。
-- **文件化。** 斷言是可執行的文件。不同於註解，它不會悄悄過時——一旦它變為假，就會觸發。
-- **可重用。** 同一組斷言可在區塊層級模擬、全晶片回歸測試與形式化中執行，無需變更。
+- **文件化。** assertion 是可執行的文件。不同於註解，它不會悄悄過時——一旦它變為假，就會觸發。
+- **可重用。** 同一組 assertion 可在區塊層級 simulation、全晶片回歸測試與 formal 中執行，無需變更。
 
-## 斷言在流程中的定位
+## assertion 在流程中的定位
 
-同一個斷言可在設計流程中服務於多種工具：
+同一個 assertion 可在設計流程中服務於多種工具：
 
-- **模擬。** 斷言每個時脈週期對實際訊號值進行評估。違反時會在精確的時間與位置印出錯誤。
-- **形式化驗證（formal verification，形式化驗證）。** 形式化工具嘗試*證明*斷言對每個合法輸入皆成立，若無法證明則產生反例軌跡。此處斷言分為要證明的部分（`assert`）與對環境的假設（`assume`）。
-- **模擬器（emulation）與晶片上電除錯。** 可合成的斷言子集可在模擬器上執行，而它們所捕捉的意圖能指引矽後（post-silicon）除錯。
+- **simulation。** assertion 每個 clock 週期對實際訊號值進行評估。違反時會在精確的時間與位置印出錯誤。
+- **formal verification。** formal tool 嘗試*證明*assertion 對每個合法輸入皆成立，若無法證明則產生反例軌跡。此處 assertion 分為要證明的部分（`assert`）與對環境的假設（`assume`）。
+- **emulator（emulation）與晶片上電除錯。** 可合成的 assertion subset 可在 emulator 上執行，而它們所捕捉的意圖能指引矽後（post-silicon）除錯。
 
-正因為一個斷言可服務於上述全部，於 RTL 開發期間寫一次即可使其價值倍增。
+正因為一個 assertion 可服務於上述全部，於 RTL 開發期間寫一次即可使其價值倍增。
 
-## 一眼看懂兩種斷言
+## 一眼看懂兩種 assertion
 
-SystemVerilog 有兩大斷言家族。後續章節各有深入處理；此處先說明其區別。
+SystemVerilog 有兩大 assertion 家族。後續章節各有深入處理；此處先說明其區別。
 
-**即時斷言**（immediate assertion，即時斷言）是一條程序式語句。它在控制流抵達它的*當下*評估其運算式，正如同 `if`。它檢查某一瞬間的條件。
+**immediate assertion**是一條程序式語句。它在控制流抵達它的*當下*評估其運算式，正如同 `if`。它檢查某一瞬間的條件。
 
 ```systemverilog
 // Immediate: checked the moment this statement executes
@@ -61,20 +71,20 @@ always_comb
     assert (onehot_count <= 1);
 ```
 
-**並行斷言**（concurrent assertion，並行斷言）帶有時脈。它隨時間評估，在時脈緣取樣其訊號，並針對跨週期的行為進行推理。它檢查一個時序陳述——某種在一個或多個時脈上展開的行為。
+**concurrent assertion**帶有 clock。它隨時間評估，在 clock edge sampling 其訊號，並針對跨週期的行為進行推理。它檢查一個時序陳述——某種在一個或多個 clock 上展開的行為。
 
 ```systemverilog
 // Concurrent: checked every clock, can span multiple cycles
 assert property (@(posedge clk) req |=> gnt);
 ```
 
-經驗法則：用即時斷言檢查程序式程式碼中某一點的條件，用並行斷言檢查帶時脈時間上的預期行為。關於協定、握手、與狀態機的設計意圖多半是時序性的，因此本部大部分內容都在談並行斷言。
+經驗法則：用 immediate assertion 檢查程序式程式碼中某一點的條件，用 concurrent assertion 檢查帶 clock 時間上的預期行為。關於協定、握手、與狀態機的設計意圖多半是時序性的，因此本部大部分內容都在談 concurrent assertion。
 
 ## 在源頭失敗
 
-斷言的核心益處在於它*在何處*失敗。考慮一個被破壞的 FIFO 指標。沒有斷言時，錯誤的指標被寫入，稍後又被讀回，於是錯誤的資料離開 FIFO；症狀出現在數個模組之外的下游，或許是數千個週期之後，難以回溯到原因。
+assertion 的核心益處在於它*在何處*失敗。考慮一個被破壞的 FIFO 指標。沒有 assertion 時，錯誤的指標被寫入，稍後又被讀回，於是錯誤的資料離開 FIFO；症狀出現在數個模組之外的下游，或許是數千個週期之後，難以回溯到原因。
 
-有了對指標不變式的斷言，失敗會在指標越界的瞬間被回報——就在源頭，並指明正確的週期與正確的訊號。原因與症狀之間的距離縮減為零。這就是「一下午的波形考古」與「一行訊息」之間的差別。
+有了對指標不變式的 assertion，失敗會在指標越界的瞬間被回報——就在源頭，並指明正確的週期與正確的訊號。原因與症狀之間的距離縮減為零。這就是「一下午的波形考古」與「一行訊息」之間的差別。
 
 ```systemverilog
 // Catch the bad pointer where it happens, not downstream
@@ -82,24 +92,24 @@ assert property (@(posedge clk) disable iff (!rst_n)
     wr_ptr < DEPTH);
 ```
 
-> **設計意圖。** RTL 捕捉實作；斷言捕捉實作必須遵守的承諾。把兩者並排寫下，
+> **設計意圖。** RTL 捕捉實作；assertion 捕捉實作必須遵守的承諾。把兩者並排寫下，
 > 工具便能在實作違反承諾的瞬間告訴你——就在源頭，而非三個模組之外。
 
 ## 常見陷阱
 
-- **把斷言視為只與驗證者相關。** 設計者擁有意圖，應在邏輯記憶猶新時撰寫捕捉它的斷言。
-- **寫註解而非斷言。** 註解不會觸發。若意圖可檢查，就把它寫成斷言，使其保持誠實。
-- **為單一瞬間的檢查動用並行斷言。** 單純的組合不變式應是即時斷言；不要替它套上它不需要的時脈。
-- **把所有斷言延後到獨立的驗證階段。** 最便宜被發現的錯誤，是斷言在程式碼首次執行時就捕捉到的那些。
+- **把 assertion 視為只與驗證者相關。** 設計者擁有意圖，應在邏輯記憶猶新時撰寫捕捉它的 assertion。
+- **寫註解而非 assertion。** 註解不會觸發。若意圖可檢查，就把它寫成 assertion，使其保持誠實。
+- **為單一瞬間的檢查動用 concurrent assertion。** 單純的組合不變式應是 immediate assertion；不要替它套上它不需要的 clock。
+- **把所有 assertion 延後到獨立的驗證階段。** 最便宜被發現的錯誤，是 assertion 在程式碼首次執行時就捕捉到的那些。
 
 ## 小結
 
-- RTL 說明硬體*如何*行為；斷言說明*什麼必須為真*。
+- RTL 說明硬體*如何*行為；assertion 說明*什麼必須為真*。
 - ABV 在整個設計中嵌入許多小檢查，由擁有意圖的設計者撰寫。
-- 一個斷言可在流程中服務於模擬、形式化與模擬器。
-- 即時斷言檢查某一瞬間的條件；並行斷言檢查帶時脈時間上的行為。
-- 斷言在源頭失敗，縮減原因與症狀之間的距離。
+- 一個 assertion 可在流程中服務於 simulation、formal與 emulator。
+- immediate assertion 檢查某一瞬間的條件；concurrent assertion 檢查帶 clock 時間上的行為。
+- assertion 在源頭失敗，縮減原因與症狀之間的距離。
 
 ---
 
-[← 驗證功能概覽](../part2-systemverilog/07-verification-features-overview.md) · [目錄](../README.md) · [下一章：模擬語意 →](02-simulation-semantics.md)
+[← 驗證功能概覽](../part2-systemverilog/07-verification-features-overview.md) · [目錄](../README.md) · [下一章：simulation semantics →](02-simulation-semantics.md)

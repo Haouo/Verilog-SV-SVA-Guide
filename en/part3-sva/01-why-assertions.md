@@ -10,6 +10,18 @@
 - Tell immediate from concurrent assertions at a glance.
 - Understand why failing at the source beats failing downstream.
 
+## Designer's mental model
+
+An assertion is executable intent. It does not replace RTL, a testbench, or a
+specification; it connects them by stating one rule the design must obey. The
+best assertions are small enough to fail for one clear reason and close enough to
+the RTL that the failing cycle explains the bug.
+
+Start from English before syntax. "A request must be answered within four cycles"
+is the intent; `req |-> ##[1:4] ack` is one encoding of it. If the English rule is
+fuzzy, the property will be fuzzy too. Good SVA begins with a precise design
+sentence.
+
 ## RTL says how; an assertion says what must be true
 
 A piece of RTL describes *how* the hardware computes a result. It does not, on

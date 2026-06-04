@@ -9,6 +9,16 @@
 - 理解 Moore 與 Mealy 輸出的差異。
 - 選擇狀態編碼並避免鎖死狀態（lockup state）。
 
+## 設計者 mental model
+
+FSM 是一個 named control contract。state register 說明 block 目前在哪個 phase；next-state
+logic 說明哪些 transition 合法；output logic 說明每個 phase 對 design 其他部分承諾什麼。把這些
+role 分開，machine 會更容易 debug，也更容易寫 assertion。
+
+不要只把 FSM 讀成一堆 `case` branch；要把它讀成 graph：哪些 state 合法、哪些 edge 允許、
+什麼 event 造成移動、若 state 變 illegal 有沒有 recovery path。這個 graph 通常也是後續推導
+assertion 的最佳起點。
+
 ## RTL 中的有限狀態機
 
 有限狀態機（finite state machine，FSM）是以一組狀態、狀態之間的轉換，以及各狀態產生的輸出來建模的控制邏輯。設計中大多數控制路徑——握手（handshake）、協定、仲裁器——都是 FSM。挑戰不在於概念本身，而在於寫出清晰且能乾淨合成的程式碼。

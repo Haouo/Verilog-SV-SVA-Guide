@@ -9,6 +9,19 @@
 - Build a hierarchy and understand how it elaborates.
 - Pass parameters to make a module reusable.
 
+## Designer's mental model
+
+A `module` is not just a text container. It is the unit at which a design names a
+piece of hardware, declares what crosses its boundary, and lets elaboration build
+a hierarchy of instances. When you read a module, first read its port list and
+parameters as a contract before looking at the implementation below it.
+
+Good hierarchy reduces how much context you need at once. A caller should not
+need to know every internal register of a child block; it should need to know the
+ports, parameter meanings, and timing expectations. That is why this chapter
+spends time on naming, instantiation, and parameterization rather than only the
+`module ... endmodule` syntax.
+
 ## The module is the unit of design
 
 A `module` is the basic building block in Verilog. It has a name, a list of

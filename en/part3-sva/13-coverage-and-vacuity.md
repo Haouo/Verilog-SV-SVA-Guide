@@ -10,6 +10,18 @@
 - Confirm that an implication's antecedent actually fires.
 - Frame assertion verification closure: every check exercised, every trigger seen.
 
+## Designer's mental model
+
+A passing assertion answers only one question: no observed attempt violated this
+rule. It does not prove that the interesting attempt ever happened. Coverage and
+vacuity checks answer the missing question: did the trigger occur, did the window
+open, and did the design exercise the behavior the assertion was meant to guard?
+
+For every important implication, ask what evidence would convince you the check
+was meaningful. Often that evidence is a `cover property` on the antecedent or a
+related scenario. Assertion closure is not just green checks; it is green checks
+plus confidence that the checks were actually exercised.
+
 ## Cover: did it actually happen?
 
 An `assert` proves a behavior is *correct*. A `cover` (覆蓋) proves a behavior

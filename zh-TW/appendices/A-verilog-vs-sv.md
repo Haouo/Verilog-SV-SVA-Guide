@@ -5,6 +5,15 @@
 本附錄快速對照 Verilog（IEEE 1364-2005）與第二部所涵蓋的 SystemVerilog 設計改進。
 每項功能附一句說明，解釋它對撰寫可合成（synthesizable）RTL 的設計者有何助益。
 
+## 如何使用這個 appendix
+
+請把這個 appendix 當成 decision aid，用來把 Verilog habit 轉成 SystemVerilog design habit。表格
+不是說每個舊 construct 都錯，而是在指出 SystemVerilog 哪些地方能把同一個 intent 寫得更 explicit，
+也更容易被 tool check。
+
+採用某個 feature 前，建議先沿著 link 回到對應 chapter。短表格給 motivation，但 chapter 會說明
+constraint、pitfall，以及 synthesis-aware context。
+
 ---
 
 ## 資料型別
@@ -12,13 +21,13 @@
 | 功能 | Verilog (1364-2005) | SystemVerilog (1800-2023) | 助益說明 |
 |---|---|---|---|
 | 線網與變數 | `wire`（線網）、`reg`（變數）— 語意不同 | `logic` 統一代替兩者 — 同為四態，單一關鍵字 | 消除 `wire` 與 `reg` 的混淆；`logic` 只有一個驅動源，可用於 `reg` 的所有場合。見[第二部 · 第 2 章](../part2-systemverilog/02-enhanced-data-types.md)。 |
-| 二態型別 | 無 | `bit`、`byte`、`shortint`、`int`、`longint` | 二態模擬速度更快，更直接地對應設計意圖；適合 testbench 算術。 |
+| 二態型別 | 無 | `bit`、`byte`、`shortint`、`int`、`longint` | 二態 simulation 速度更快，更直接地對應設計意圖；適合 testbench 算術。 |
 | 列舉型別 | 以 `parameter` 或 `localparam` 編碼 | `enum logic [1:0] { IDLE, BUSY, DONE }` | 具名狀態；合成工具與偵錯工具顯示狀態名稱，而非數字。見[第二部 · 第 2 章](../part2-systemverilog/02-enhanced-data-types.md)。 |
 | 結構 | 無 | `typedef struct packed { ... }` | 將相關欄位分組；packed struct 可合成。 |
 | 聯集 | 無 | `typedef union packed { ... }` | 在同一組位元上重疊多種編碼；packed 時可合成。 |
 | void 型別 | 無 | `void`（用於無回傳值的 task） | 讓函式/task 簽名更清晰。 |
-| string 型別 | 無 | `string`（動態） | 適用於非合成的 testbench 與斷言訊息。 |
-| 整數字面值 | `8'b0`，必須指定位元寬 | `'0`、`'1`、`'x`、`'z`（位元寬自動推斷） | `q <= '0` 無論位元寬為何皆能將所有位元重置，不需寫魔術數字。 |
+| string 型別 | 無 | `string`（動態） | 適用於非合成的 testbench 與 assertion message。 |
+| 整數字面值 | `8'b0`，必須指定位元寬 | `'0`、`'1`、`'x`、`'z`（位元寬自動推斷） | `q <= '0` 無論位元寬為何皆能將所有位元 reset，不需寫魔術數字。 |
 
 ---
 
@@ -27,7 +36,7 @@
 | 功能 | Verilog (1364-2005) | SystemVerilog (1800-2023) | 助益說明 |
 |---|---|---|---|
 | 組合邏輯區塊 | `always @(*)` | `always_comb` | 無敏感度列表錯誤；工具自動推斷完整列表。Verilog 中 `@(*)` 漏寫信號是常見的閂鎖器錯誤。見[第二部 · 第 5 章](../part2-systemverilog/05-procedural-and-operators.md)。 |
-| 時脈邏輯區塊 | `always @(posedge clk)` | `always_ff @(posedge clk)` | 宣告意圖；lint 與合成工具可對 `always_ff` 內的非正反器內容發出警告。 |
+| clock 邏輯區塊 | `always @(posedge clk)` | `always_ff @(posedge clk)` | 宣告意圖；lint 與合成工具可對 `always_ff` 內的非正反器內容發出警告。 |
 | 閂鎖器區塊 | 由 `always @(*)` 中不完整的 `if` 推斷 | `always_latch` | 明確宣告；閂鎖器是刻意的，而非意外。 |
 | 迴圈變數 | 必須在 `begin` 前宣告 | `for (int i = 0; ...)` — 內嵌宣告 | 迴圈寫法更簡短，較不易出錯。 |
 | `unique`/`priority` | 無 | `unique case`、`priority case` | 表達設計者對 case 完整性與優先序的知識；工具可加以驗證。 |
@@ -60,7 +69,7 @@
 | 功能 | Verilog (1364-2005) | SystemVerilog (1800-2023) | 助益說明 |
 |---|---|---|---|
 | 埠組合 | 每個模組各自重複列出個別埠 | `interface` + `modport` | 匯流排信號只宣告一次；modport 依角色強制規定方向。見[第二部 · 第 4 章](../part2-systemverilog/04-interfaces-and-modports.md)。 |
-| 埠內協定 | 無 | 介面內可內嵌斷言與 task | 將協定規則綁定於匯流排，而非散落在各模組中。 |
+| 埠內協定 | 無 | 介面內可內嵌 assertion 與 task | 將協定規則 bind 於匯流排，而非散落在各模組中。 |
 
 ---
 
@@ -81,7 +90,7 @@ Verilog                    SystemVerilog 等效寫法
 wire / reg                 logic（或 wire logic）
 always @(*)                always_comb
 always @(posedge clk)      always_ff @(posedge clk)
-8'b0 重置                  '0
+8'b0 reset                 '0
 casez / casex              case inside
 各模組各自的 parameter      package + import
 重複列出的埠                interface + modport

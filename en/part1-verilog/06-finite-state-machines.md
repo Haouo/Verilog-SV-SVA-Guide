@@ -9,6 +9,18 @@
 - Understand Moore versus Mealy outputs.
 - Choose a state encoding and avoid lockup states.
 
+## Designer's mental model
+
+An FSM is a named control contract. The state register says which phase the block
+is in; the next-state logic says what transitions are legal; the output logic
+says what each phase promises to the rest of the design. Keeping those roles
+separate makes the machine easier to debug and easier to assert.
+
+Do not read an FSM only as a collection of `case` branches. Read it as a graph:
+which states are legal, which edges are allowed, what events cause movement, and
+what recovery path exists if the state becomes illegal. That graph is often the
+best place to derive assertions later.
+
 ## What an FSM is in RTL
 
 A finite state machine (FSM) is control logic modeled as a set of states, the

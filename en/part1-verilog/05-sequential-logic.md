@@ -9,6 +9,18 @@
 - Choose between synchronous and asynchronous reset.
 - Avoid the classic blocking/non-blocking race.
 
+## Designer's mental model
+
+Sequential logic is where time becomes state. A clock edge samples input values
+and commits new register values; between edges, the registers hold. The code form
+should make that sampling story obvious, which is why non-blocking assignment is
+the default for clocked logic.
+
+Reset is part of the same story. It defines what state the design promises after
+initialization or recovery. A reset branch is not decoration: it is the explicit
+answer to "what values are safe before normal traffic begins?" If that answer is
+unclear, downstream assertions and testbenches will also be unclear.
+
 ## Inferring a flip-flop
 
 Sequential logic has state that updates on a clock edge. You infer a flip-flop

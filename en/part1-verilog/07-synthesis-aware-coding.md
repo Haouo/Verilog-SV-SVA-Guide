@@ -8,6 +8,20 @@
 - Recognize and avoid the constructs that cause mismatch.
 - Apply a short checklist of synthesis-safe habits.
 
+## Designer's mental model
+
+Synthesis-aware coding is the discipline of making simulation, synthesis, and
+human intent describe the same hardware. A simulator can execute many constructs
+that cannot become gates, and a synthesis tool can legally optimize away behavior
+that the designer thought was meaningful. The safest RTL leaves little room for
+that mismatch.
+
+Read every rule in this chapter as a way to protect that alignment: complete
+assignments prevent accidental storage, explicit widths prevent silent truncation,
+and avoiding `x`-optimism prevents simulation from hiding hardware uncertainty.
+The goal is not style purity; it is preserving the meaning of the design across
+tools.
+
 ## The golden rule: simulation must match synthesis
 
 A synthesis tool builds gates from your RTL. A simulator runs your RTL as a

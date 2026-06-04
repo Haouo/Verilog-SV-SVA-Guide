@@ -13,6 +13,18 @@ This is the closing chapter of Part III. It assumes everything before it — sam
 (Chapter 2), implication and vacuity (Chapters 7, 13), clocking and reset (Chapter 8),
 and the patterns of Chapter 10 — and turns to what goes wrong and how to fix it.
 
+## Designer's mental model
+
+A failed assertion is a debugging instrument. It should tell you which intent was
+violated, when the violating attempt started, and what evidence made the
+consequent fail. If a property is too large, clocked on the wrong edge, or allowed
+to pass vacuously, it stops being an instrument and becomes noise.
+
+Debugging SVA is therefore partly debugging the design and partly debugging the
+specification. When an assertion fails, check both: the RTL may be wrong, or the
+property may have encoded the wrong rule. A good anti-pattern list trains you to
+recognize the second case quickly.
+
 ## Reading a failing assertion
 
 When a concurrent assertion fails, the tool reports the cycle the obligation was

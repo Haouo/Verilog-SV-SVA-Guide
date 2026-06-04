@@ -5,6 +5,18 @@
 A dense reference card for the SVA constructs covered in Part III. Each section
 links to the chapter where the construct is explained in depth.
 
+## How to use this appendix
+
+Use this cheat-sheet after you already understand the intent behind a construct.
+It is optimized for recall, not first learning. If a row feels surprising, follow
+the chapter link and rebuild the timing model before using the syntax in real RTL
+or a formal environment.
+
+The safest workflow is sentence first, operator second: state the protocol rule
+in words, choose the sampled facts or sequence shape, then use this appendix to
+confirm the exact spelling. SVA syntax is compact; the design sentence keeps it
+honest.
+
 ---
 
 ## Sampled-value functions

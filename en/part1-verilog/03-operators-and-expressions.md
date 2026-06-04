@@ -9,6 +9,19 @@
 - Know the difference between logical and bitwise, and between `==` and `===`.
 - Avoid the common width and signedness traps.
 
+## Designer's mental model
+
+An expression is a small hardware network. Operators choose the gates, reductions
+collapse vectors, concatenations route bits, and comparisons decide how unknowns
+participate. Read an expression as hardware first and syntax second: what bits go
+in, how many bits come out, and whether `x` or signedness can change the result.
+
+This is also where simulation and synthesis can quietly diverge from intention.
+The simulator will faithfully apply the language's sizing and four-state rules,
+but that may not be the rule the designer had in mind. Good RTL makes width and
+signedness explicit enough that the expression reads like the hardware you meant
+to build.
+
 ## Operator groups
 
 Verilog operators fall into a few groups. The ones you use most in RTL:

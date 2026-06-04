@@ -18,6 +18,20 @@
 - Know where the boundary between the design subset (this guide) and the
   verification subset lies.
 
+## Designer's mental model
+
+SystemVerilog contains both design features and verification features. A designer
+does not need to master every class-based or UVM detail to write good RTL, but
+should be able to recognize when code has moved out of the synthesizable design
+subset. That recognition prevents accidental dependence on testbench-only
+constructs.
+
+This chapter is a map, not a methodology course. Its purpose is to show where
+classes, constrained randomization, functional coverage, and UVM sit relative to
+RTL and assertions. SVA is the bridge a designer uses most directly: it stays
+close to the design while still giving verification tools something precise to
+check.
+
 ## The two faces of SystemVerilog
 
 IEEE 1800 is a single standard that serves two communities. The **design subset**

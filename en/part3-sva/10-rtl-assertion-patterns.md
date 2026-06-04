@@ -16,6 +16,18 @@ names. All snippets assume a `default clocking @(posedge clk)` and a
 `default disable iff (!rst_n)` are in scope, so the clock and reset are omitted for
 focus.
 
+## Designer's mental model
+
+Assertion patterns are reusable translations from common RTL contracts to SVA.
+A handshake, FIFO boundary, one-hot state, or no-unknown rule appears in many
+designs; each time, the same questions return: what triggers the rule, what must
+remain stable, what latency is allowed, and what failure should mean.
+
+Use patterns as starting points, not as magic macros. Before copying a property,
+name the protocol rule in words and choose the clock, reset, latency, and
+vacuity check that match your block. The pattern gives structure; the design
+context gives truth.
+
 ## Request / acknowledge handshake
 
 The most common protocol shape: a request must be answered within a bounded window.

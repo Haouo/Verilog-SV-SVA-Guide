@@ -7,14 +7,24 @@
 ## 學習目標
 
 - 能以名稱識別主要的 SystemVerilog 驗證構造。
-- 理解這些功能僅用於模擬，不可合成（synthesizable）。
+- 理解這些功能僅用於simulation，不可合成（synthesizable）。
 - 了解設計子集（本指南）與驗證子集的邊界。
+
+## 設計者 mental model
+
+SystemVerilog 同時包含 design feature 和 verification feature。designer 不需要精通每個 class-based
+或 UVM 細節才能寫好 RTL，但應該能辨識 code 何時離開 synthesizable design subset。這個辨識能力
+可以避免不小心依賴 testbench-only construct。
+
+本章是一張 map，不是 methodology course。目的在於說明 class、constrained randomization、
+functional coverage、UVM 相對於 RTL 和 assertion 的位置。SVA 是 designer 最直接使用的 bridge：
+它靠近 design，同時也給 verification tool 精準的 check target。
 
 ## SystemVerilog 的兩個面向
 
 IEEE 1800 是一個服務兩個社群的單一標準。**設計子集**（本指南第一部和第二部）以可合成 RTL 為目標：模組、always 區塊、介面、套件和型別系統。**驗證子集**以物件導向程式設計、隨機化和覆蓋率擴展了語言——這些都不能合成為硬體。
 
-一個檔案可以混合這兩個子集。合成工具只接受設計子集；它們拒絕或忽略驗證構造。模擬器接受兩者。當閱讀 SystemVerilog 程式碼庫時，你會遇到這兩個部分。
+一個檔案可以混合這兩個子集。合成工具只接受設計子集；它們拒絕或忽略驗證構造。simulator接受兩者。當閱讀 SystemVerilog 程式碼庫時，你會遇到這兩個部分。
 
 ## 物件導向程式設計：類別
 
@@ -51,11 +61,11 @@ class aligned_transaction extends bus_transaction;
 endclass
 ```
 
-約束隨機化是現代驗證方法論的基礎，完全是模擬專用的。
+約束隨機化是現代驗證方法論的基礎，完全是simulation專用的。
 
 ## 行程間通訊：mailbox 與 semaphore
 
-`mailbox` 是一個參數化的 FIFO，用於在並行模擬執行緒（`fork / join`）之間傳遞物件。`semaphore` 提供互斥（mutual exclusion）。兩者都是模擬構造。
+`mailbox` 是一個參數化的 FIFO，用於在並行simulation執行緒（`fork / join`）之間傳遞物件。`semaphore` 提供互斥（mutual exclusion）。兩者都是simulation構造。
 
 ```systemverilog
 // Verification only
@@ -67,7 +77,7 @@ semaphore bus_lock;                   // prevent concurrent bus access
 
 ## 功能覆蓋率
 
-`covergroup` 和 `coverpoint` 測量模擬已測試的值和值組合。覆蓋率報告推動驗證過程：當覆蓋率達到 100% 時，驗證計劃完成。
+`covergroup` 和 `coverpoint` 測量simulation已測試的值和值組合。覆蓋率報告推動驗證過程：當覆蓋率達到 100% 時，驗證計劃完成。
 
 ```systemverilog
 // Verification only
@@ -91,22 +101,22 @@ UVM 超出了本指南的範圍。這是一個廣泛的主題；已有專門的�
 
 ## 斷言作為橋梁
 
-SystemVerilog Assertions（SVA）占據了中間地帶：它們以驗證風格撰寫，但許多可以合成或被形式化驗證（formal verification）工具消費。SVA 是本指南第三部的主題，也是每位 RTL 設計者都應了解的驗證相鄰功能。
+SystemVerilog Assertions（SVA）占據了中間地帶：它們以驗證風格撰寫，但許多可以合成或被formal驗證（formal verification）工具消費。SVA 是本指南第三部的主題，也是每位 RTL 設計者都應了解的驗證相鄰功能。
 
 > **設計意圖。** 了解驗證功能的存在——並能在程式碼中識別它們——幫助設計者理解完整的 SystemVerilog 生態系統，而不至於被它淹沒。第一部和第二部的設計子集已足以描述任何可合成的 RTL。第三部新增了將設計意圖與自動化檢查相連接的斷言（assertion）層。
 
 ## 常見陷阱
 
 - **在可合成設計檔案中使用 `class` 或 `rand`。** 合成工具會拒絕這些構造。將驗證程式碼保存在單獨的檔案或目錄中，並使設計檔案不含類別定義和隨機修飾詞。
-- **將 `mailbox` 與硬體 FIFO 混淆。** `mailbox` 是模擬物件。硬體 FIFO 是帶有帶時脈的推入和彈出邏輯的模組，如第六章所示。
-- **將覆蓋率視為合成的一部分。** 覆蓋率指令是模擬儀器。它們不會在合成設計中增加任何邏輯。
+- **將 `mailbox` 與硬體 FIFO 混淆。** `mailbox` 是simulation物件。硬體 FIFO 是帶有帶時脈的推入和彈出邏輯的模組，如第六章所示。
+- **將覆蓋率視為合成的一部分。** 覆蓋率指令是simulation儀器。它們不會在合成設計中增加任何邏輯。
 
 ## 小結
 
-- SystemVerilog 有一個設計子集（可合成）和一個驗證子集（僅限模擬）；本指南涵蓋設計子集。
+- SystemVerilog 有一個設計子集（可合成）和一個驗證子集（僅限simulation）；本指南涵蓋設計子集。
 - 類別、約束隨機化、mailbox、semaphore 和 covergroup 都是驗證構造，無一可合成為硬體。
 - UVM 是建立在 SV 類別系統上的標準驗證方法論；它是一個獨立的學科。
-- SVA（第三部）是橋梁：可用於設計和形式化驗證情境的斷言語言。
+- SVA（第三部）是橋梁：可用於設計和formal驗證情境的斷言語言。
 - 關於驗證，請參閱[附錄 D](../appendices/D-references.md) 中的參考資料。
 
 ---

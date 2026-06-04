@@ -3,10 +3,16 @@
 [← 回到首頁](../README.md) · [English Edition](../en/README.md)
 
 本指南寫給 RTL 設計工程師。內容涵蓋撰寫可合成（synthesizable）硬體所需的 Verilog
-與 SystemVerilog，並深入介紹 **SystemVerilog Assertions（SVA）**，因為斷言
-（assertion）正是設計者用來記錄設計意圖（design intent）的工具。
+與 SystemVerilog，並深入介紹 **SystemVerilog Assertions（SVA）**，因為 assertion
+正是設計者用來記錄 design intent 的工具。
 
 若你剛接觸這些語言，建議依序閱讀。若你已能撰寫 RTL，可直接跳到 **第三部**。
+
+## 閱讀風格
+
+這份 guide 應該被當成 designer 的 working reference，而不只是 syntax list。每章現在會先說明該
+construct 背後的 mental model，再進入 example 與 pitfall。如果你只是快速瀏覽，請先讀那段
+mental-model section；它會告訴你這個 syntax 想把什麼 intent 明確化。
 
 ## 目錄
 
@@ -37,23 +43,23 @@ SystemVerilog 設計子集，依據 IEEE 1800-2023。
 7. [驗證功能概覽（僅提及）](part2-systemverilog/07-verification-features-overview.md)
 
 ### 第三部 — SystemVerilog Assertions（核心重點）
-實務上的設計意圖斷言，並涵蓋進階與形式化（formal）主題。
+實務上的設計意圖 assertion，並涵蓋進階與 formal 主題。
 
-1. [為何需要斷言](part3-sva/01-why-assertions.md)
-2. [模擬語意](part3-sva/02-simulation-semantics.md)
-3. [斷言種類](part3-sva/03-assertion-kinds.md)
+1. [為何需要 assertion](part3-sva/01-why-assertions.md)
+2. [simulation semantics](part3-sva/02-simulation-semantics.md)
+3. [assertion kinds](part3-sva/03-assertion-kinds.md)
 4. [布林層](part3-sva/04-boolean-layer.md)
-5. [序列：基礎](part3-sva/05-sequences-basics.md)
-6. [序列運算](part3-sva/06-sequence-operations.md)
-7. [性質（property）](part3-sva/07-properties.md)
-8. [時脈與重置](part3-sva/08-clocking-and-reset.md)
-9. [綁定與放置](part3-sva/09-binding-and-placement.md)
-10. [RTL 斷言樣式](part3-sva/10-rtl-assertion-patterns.md)
+5. [sequence basics](part3-sva/05-sequences-basics.md)
+6. [sequence operation](part3-sva/06-sequence-operations.md)
+7. [property](part3-sva/07-properties.md)
+8. [clock 與 reset](part3-sva/08-clocking-and-reset.md)
+9. [bind 與放置](part3-sva/09-binding-and-placement.md)
+10. [RTL assertion pattern](part3-sva/10-rtl-assertion-patterns.md)
 11. [區域變數](part3-sva/11-local-variables.md)
-12. [遞迴性質](part3-sva/12-recursive-properties.md)
-13. [覆蓋率與空真（vacuity）](part3-sva/13-coverage-and-vacuity.md)
-14. [形式化驗證入門](part3-sva/14-formal-verification-primer.md)
-15. [checker 與函式庫](part3-sva/15-checkers-and-libraries.md)
+12. [recursive property](part3-sva/12-recursive-properties.md)
+13. [coverage 與 vacuity](part3-sva/13-coverage-and-vacuity.md)
+14. [formal verification 入門](part3-sva/14-formal-verification-primer.md)
+15. [checker 與 library](part3-sva/15-checkers-and-libraries.md)
 16. [除錯與反樣式](part3-sva/16-debugging-and-antipatterns.md)
 
 ### 附錄

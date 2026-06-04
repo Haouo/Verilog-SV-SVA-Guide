@@ -11,6 +11,18 @@
 - Tell bounded from unbounded proofs and read their results.
 - Judge when a designer should reach for formal instead of simulation.
 
+## Designer's mental model
+
+Formal verification changes the question from "did this happen in the tests I
+ran?" to "can this happen under all allowed behaviors?" Assertions become proof
+obligations, assumptions define the legal environment, and covers ask whether a
+scenario is reachable at all.
+
+This makes assumptions as important as assertions. A too-weak assumption may let
+the tool explore impossible environments; a too-strong assumption may hide the
+bug. Good formal setup is therefore a model of the design's world, not just a bag
+of properties.
+
 ## What formal does
 
 **Formal verification** (形式化驗證) proves a property over *every* legal input

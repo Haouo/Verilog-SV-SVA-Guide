@@ -12,6 +12,18 @@
   forms.
 - Name and parameterize a property.
 
+## Designer's mental model
+
+A property turns patterns into obligations. The antecedent names the trigger; the
+consequent names what the design must do when that trigger occurs. Implication is
+therefore a contract shape: if the left side happens, the right side must hold at
+the specified time.
+
+Most property bugs are contract bugs. The antecedent may be too broad, too rare,
+or accidentally impossible; the consequent may start one cycle too early or too
+late; the property may pass vacuously because the trigger never happened. Read
+every implication as a sentence and check both halves.
+
 ## Property versus sequence
 
 A **sequence** (序列) describes a pattern that *matches* or does not. A

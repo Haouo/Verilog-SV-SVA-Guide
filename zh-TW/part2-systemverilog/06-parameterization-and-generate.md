@@ -9,6 +9,16 @@
 - 以 `for`、`if` 和具名範圍撰寫 `generate` 區塊。
 - 構建參數化、可重用的設計模組。
 
+## 設計者 mental model
+
+parameterization 把 design choice 移到 elaboration time。parameterized module 是一個 hardware
+family 的 template；`generate` 在 simulation 或 synthesis 開始前選擇或複製 structure。把 parameter
+當成 module contract 的一部分：caller 選擇 legal value，module 再推導 internal width 和 instance。
+
+危險在於 flexible module 可能變成 under-specified。每個 parameter 都應該有 meaning、range、
+consequence。derived `localparam` 很重要，因為它把 caller choice 轉成穩定的 internal fact，讓
+implementation 更容易讀，也更不容易誤用。
+
 ## 帶型別的參數
 
 在 Verilog 中，參數是無型別的整數。SystemVerilog 允許參數攜帶明確的型別，從而改善錯誤檢查並記錄設計意圖。
@@ -28,7 +38,7 @@ module fifo #(
 );
 ```
 
-將參數型別指定為 `int` 意味著工具會檢查覆寫值是否為相容的整數。型別指定為 `bit` 則記錄了它是布林標誌。帶型別的參數能在闡述（elaboration）時就捕獲 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，而非在模擬時才發現。
+將參數型別指定為 `int` 意味著工具會檢查覆寫值是否為相容的整數。型別指定為 `bit` 則記錄了它是布林標誌。帶型別的參數能在闡述（elaboration）時就捕獲 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，而非在simulation時才發現。
 
 ### `localparam`
 
@@ -82,7 +92,7 @@ logic [ADDR_W-1:0] rd_addr, wr_addr;
 
 ## `generate` 區塊
 
-`generate` 區塊允許在闡述時進行結構性條件判斷和迴圈。它建立硬體結構，而非執行時行為。`generate` 區塊內的所有內容在模擬或合成開始之前就已確定。
+`generate` 區塊允許在闡述時進行結構性條件判斷和迴圈。它建立硬體結構，而非執行時行為。`generate` 區塊內的所有內容在simulation或合成開始之前就已確定。
 
 ### `generate for` — 複製結構
 
@@ -236,7 +246,7 @@ endmodule
 - 帶型別的 `parameter` 值記錄意圖並啟用闡述時的檢查。
 - `localparam` 表達呼叫者無法覆寫的衍生常數。
 - `$bits` 在闡述時測量任何型別的大小；`$clog2` 計算給定深度的最小位址寬度。
-- `generate for` 複製結構；`generate if` 在備選方案之間選擇；兩者都在模擬或合成之前的闡述時確定。
+- `generate for` 複製結構；`generate if` 在備選方案之間選擇；兩者都在simulation或合成之前的闡述時確定。
 - 具名的 generate 範圍（`begin : label`）改善可讀性並支援階層性引用。
 
 ---

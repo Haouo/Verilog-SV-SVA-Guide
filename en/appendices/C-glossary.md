@@ -9,6 +9,13 @@ That file is the single source of truth for term translations used throughout
 both the English and Traditional Chinese editions. Add a term there before
 introducing a new translation in any chapter.
 
+## How to use this appendix
+
+This appendix points back to the shared bilingual glossary. Treat the glossary as
+a style contract: when a term needs a Chinese gloss, use the same gloss
+consistently; when the English term is the natural RTL term, keep the English in
+the prose.
+
 ---
 
 ## Quick reference — eight core terms

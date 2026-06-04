@@ -9,6 +9,16 @@
 - 知道位元運算與邏輯運算的差異，以及 `==` 與 `===` 的不同。
 - 避免常見的寬度與有號數陷阱。
 
+## 設計者 mental model
+
+expression 是一小段 hardware network。operator 選擇 gate，reduction 把 vector 壓成較少的
+bit，concatenation 負責 bit routing，comparison 則決定 unknown 如何參與。讀 expression 時
+先當 hardware 看，再看 syntax：哪些 bit 進來、幾個 bit 出去、`x` 或 signedness 會不會改變結果。
+
+這也是 simulation 與 synthesis 容易悄悄偏離 intent 的地方。simulator 會忠實套用 language 的
+sizing 與 four-state rule，但那不一定是 designer 腦中想的 rule。好的 RTL 會把 width 與
+signedness 寫得足夠明確，讓 expression 看起來就像你真的要建的 hardware。
+
 ## 運算子群組
 
 Verilog 運算子分為幾個群組。在 RTL 中最常用的如下：

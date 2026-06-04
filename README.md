@@ -35,6 +35,14 @@ methodology are **mentioned only** where a designer needs to recognize them, wit
 pointers to dedicated verification literature. The one assertion topic that *is*
 covered deeply — because it is design intent — is SVA.
 
+## Editorial direction
+
+The guide favors clear explanation over terse reference prose. Chapters build a
+mental model first, then show syntax, examples, design-intent callouts, pitfalls,
+and summaries. The Traditional Chinese edition intentionally keeps common RTL,
+SystemVerilog, and SVA terms in English after the first gloss, so readers can map
+the prose directly back to code and standards.
+
 ## How it's organized
 
 The same chapter set exists in both languages, mirrored file-for-file. Code
