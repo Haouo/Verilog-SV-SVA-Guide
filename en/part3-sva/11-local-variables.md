@@ -22,6 +22,18 @@ happens in the sampled assertion world, not as an RTL procedural update. When a
 property has overlapping attempts, draw each attempt separately and track which
 sampled value belongs to which consequent.
 
+## Start from the problem
+
+Some rules do not merely require "a response." They require the response to match
+the original request. A returned address tag must equal the tag sampled when the
+request was issued, or returned data must match the payload sampled several cycles
+earlier. If you compare against the current signal value, you may compare against a
+value that has already changed.
+
+A local variable gives each assertion attempt a private note. It records a value at
+the trigger and reads it back in the consequent. The key is not to think of it as an
+RTL register, but as context owned by this one rule check.
+
 ## Why local variables exist
 
 Implication relates a trigger to a response, but often the response must be checked

@@ -16,6 +16,12 @@ concurrent assertion 觀察的是設計的取樣版本，而不是直接讀同�
 
 這套 timing model 是幾乎所有 SVA 意外的根源。如果 assertion 看起來差了一個 cycle，或 `$past` 好像跟波形對不上，先問每個值來自哪個 event region。取樣一旦想清楚，implication、用 reset 關閉檢查、local variable 都會少掉很多神秘感。
 
+## 從問題開始
+
+假設 RTL 在同一個 `posedge clk` 更新 `q`，而 assertion 也在同一個 `posedge clk` 檢查 `q`。新手最容易問的是：assertion 看到的是更新前的 `q`，還是更新後的 `q`？如果這個答案不固定，同一條 assertion 就可能因 simulator 排程不同而時好時壞。
+
+所以 SVA 先規定一套取樣故事：concurrent assertion 不在 Active 區域裡追逐正在變動的值，而是在 Preponed 區域拿一張穩定快照，稍後再用那張快照評估 property。本章的 event region、sampled value 與 clock 參考，都是為了回答這個「到底看到哪個值」的問題。
+
 ## sampling 所要解決的問題
 
 在單一個 simulation time step 內，許多事情同時發生：clock edge 觸發、正反器更新、組合邏輯穩定，各項指定也搶著完成。assertion 若在這片混亂中的某個任意時刻讀取訊號，可能會讀到更新到一半的值，有時是舊值、有時是新值，全看排程順序。這樣結果就不確定了。

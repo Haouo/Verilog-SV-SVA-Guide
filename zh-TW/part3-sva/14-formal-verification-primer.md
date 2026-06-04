@@ -17,6 +17,12 @@ formal verification 把問題從「在我跑過的 test 裡有沒有發生？」
 
 正因如此，assumption 跟 assertion 一樣重要。太弱的 assumption 可能讓工具去探索根本不存在的環境；太強的 assumption 又可能把 bug 藏起來。好的 formal 設定會刻畫設計與環境如何互動，而不只是堆一袋 property。
 
+## 從問題開始
+
+simulation 只能回答「我跑過的刺激沒有打破這條規則」。但有些問題很難靠刺激窮舉：FIFO 是否永遠不會在任意讀寫交錯下溢位？arbiter 是否不可能同時 grant 兩個 port？某個 deadlock 是否只在非常深的狀態後才出現？
+
+formal 把問題改寫成「在所有被允許的環境行為下，這條規則是否必然成立」。因此你不只要寫 `assert`，還要用 `assume` 定義合法環境，用 `cover` 確認情境可達。本章先建立這個角色分工，再談 bounded proof、induction 與反例。
+
 ## formal 做什麼
 
 **formal verification**（形式化驗證）用數學方式，對*每一個*合法的輸入 sequence 證明某 property，而不是檢查 simulation 碰巧產生的有限軌跡。simulation 回答的是「該 property 在我跑過的刺激上成立」，formal 回答的則是「該 property 對*所有*刺激都成立，否則這裡就有一個反例」。

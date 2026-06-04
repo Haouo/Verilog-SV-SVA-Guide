@@ -16,6 +16,12 @@ checker 是一個帶有具名介面、可重用的 assertion 容器。它讓團�
 
 好用的 checker 介面應該小而精準。它只暴露陳述規則所需的訊號、參數、clocking 與 reset，並把呼叫端不該重寫的 SVA 細節藏起來。唯有當 checker 名稱與參數讓意圖一眼可辨時，重用才有價值。
 
+## 從問題開始
+
+當同一種 handshake 在十個模組出現時，複製十份 property 看似最快，但很快會變成維護負擔：有些忘了 cover antecedent，有些 latency 參數不同，有些 reset 條件漏掉。這時真正要重用的不是幾行語法，而是一個完整的協定檢查單元。
+
+checker 和 library 的目的，就是把這個單元包起來：明確的 port、參數、clock/reset 慣例、assert 與 cover 一起出現。呼叫端只提供訊號與協定參數，不需要重新發明 property 內部怎麼寫。
+
 ## checker 構造
 
 **checker** 是 SystemVerilog 中專為容納 assertion 而設的容器，裡頭裝著 assertion、cover，以及支援它們的建模程式碼。它類似模組，有 port，可以實例化或 bind，但它專用於驗證：它可以包含 `assert`、`assume`、`cover`、sequence、property，以及有限的程序化建模，而且天生就是設計來重用的。

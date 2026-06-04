@@ -23,6 +23,18 @@ also easy to misuse if the bound module relies on fragile internal names or
 unclear hierarchy paths. Good placement makes the assertion's authority and
 visibility obvious.
 
+## Start from the problem
+
+After writing an assertion, the next question is usually not syntax but placement.
+If the check is an internal module invariant, keeping it beside the RTL is clearest.
+If the check targets third-party IP, generated RTL, or code the verification team
+should not edit, putting it directly in the source breaks ownership.
+
+Placement strategy answers two questions: who owns this rule, and which signals
+must it observe? Inline assertions, separate modules, interfaces, checkers, and
+`bind` are tradeoffs along those axes. This chapter starts from that ownership
+problem before introducing the placement mechanisms.
+
 ## Where assertions go
 
 A concurrent assertion can sit almost anywhere a continuous statement can: in the

@@ -22,6 +22,20 @@ is the intent; `req |-> ##[1:4] ack` is one encoding of it. If the English rule 
 fuzzy, the property will be fuzzy too. Good SVA begins with a precise design
 sentence.
 
+## Start from the problem
+
+Start with an ordinary debugging story: a downstream block receives bad data, but
+the real cause was an extra FIFO write three hundred cycles earlier. With only
+output checking, you see the symptom first. You still have to work backward to find
+when the data went bad, which state first drifted, and which protocol rule was
+violated.
+
+Assertions close that distance. They place local rules at the source: "do not write
+a full FIFO," "a grant cannot appear without a request," "the state vector remains
+one-hot." This chapter first builds that motivation; immediate and concurrent
+assertions, simulation, and formal verification are different ways that motivation
+lands in tools.
+
 ## RTL says how; an assertion says what must be true
 
 A piece of RTL describes *how* the hardware computes a result. It does not, on

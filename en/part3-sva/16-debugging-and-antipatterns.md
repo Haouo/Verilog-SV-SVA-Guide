@@ -25,6 +25,19 @@ specification. When an assertion fails, check both: the RTL may be wrong, or the
 property may have encoded the wrong rule. A good anti-pattern list trains you to
 recognize the second case quickly.
 
+## Start from the problem
+
+When an assertion fails, the natural reaction is "the RTL is broken." In practice,
+there is another common possibility: the property used the wrong edge, forgot
+reset, made the antecedent too broad, or gave the consequent the wrong deadline. If
+you do not separate those cases first, debugging becomes waveform archaeology for a
+bad specification.
+
+Start with the story line. When did this attempt open? Which cycle owed the
+consequent? Was the failing value a sampled value or a current procedural value?
+This chapter uses those questions to connect common anti-patterns to concrete
+debugging steps.
+
 ## Reading a failing assertion
 
 When a concurrent assertion fails, the tool reports the cycle the obligation was

@@ -22,6 +22,18 @@ was meaningful. Often that evidence is a `cover property` on the antecedent or a
 related scenario. Assertion closure is not just green checks; it is green checks
 plus confidence that the checks were actually exercised.
 
+## Start from the problem
+
+Imagine a regression report where every assertion passed, but the test never issued
+`req`. Of course `req |=> gnt` did not fail: it never truly required `gnt`. This
+kind of "green but untested" result is more dangerous than a failure because it can
+look like verification progress.
+
+Coverage and vacuity close that trust gap. `assert` tells you a rule was not
+violated; `cover` tells you the rule's trigger actually occurred. This chapter
+pairs the two into a closure discipline: no failures, and evidence that every
+important rule was exercised.
+
 ## Cover: did it actually happen?
 
 An `assert` proves a behavior is *correct*. A `cover` (覆蓋) proves a behavior

@@ -22,6 +22,19 @@ assertion seems one cycle off, or `$past` seems to disagree with a waveform, ask
 which event region each value came from. Once sampling is clear, implication,
 reset disabling, and local variables become much less mysterious.
 
+## Start from the problem
+
+Suppose RTL updates `q` on a `posedge clk`, and an assertion also checks `q` on
+that same `posedge clk`. A beginner's first question is the right one: does the
+assertion see `q` before the update, or after it? If that answer were not fixed,
+the same assertion could pass or fail based on simulator scheduling.
+
+SVA therefore starts with a sampling story. A concurrent assertion does not chase
+values while they are changing in the Active region. It takes a stable snapshot in
+the Preponed region, then evaluates the property later using that snapshot. The
+event regions, sampled values, and clock reference in this chapter all answer the
+same question: which value did the assertion actually see?
+
 ## The problem sampling solves
 
 Within a single simulation time step, many things happen: clock edges fire,

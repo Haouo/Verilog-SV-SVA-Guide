@@ -22,6 +22,18 @@ simulation, an `assume` may act like a check or constraint depending on the tool
 In formal, a bad `assume` can remove the very behavior you needed to find. Treat
 the keyword as part of the intent, not as a wrapper around a property.
 
+## Start from the problem
+
+The sentence "this must not be an illegal state" changes meaning depending on
+where and how you say it. If you check `next_state` immediately after computing it
+inside `always_comb`, that is a procedural sanity check. If you say "after every
+clock, `state` must be legal," that is a concurrent assertion over time.
+
+The outer keyword changes responsibility too. `assert` is what the design must
+guarantee, `assume` is what the environment must obey, and `cover` is the scenario
+you want to confirm was reached. This chapter separates those wrappers first so
+the same SVA syntax is not mistaken for the wrong contract.
+
 ## Immediate assertions
 
 An **immediate assertion** (即時斷言) is a procedural statement. It evaluates its

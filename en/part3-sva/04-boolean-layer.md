@@ -22,6 +22,17 @@ seen by flip-flops, not about transient procedural updates. This is why `$rose`,
 `$past`, and `$stable` are so valuable: they let a property speak in clocked
 facts instead of waveform guesses.
 
+## Start from the problem
+
+Before writing a rule across time, you need reliable words for what happened on
+this cycle. Did `req` just rise? Did `data` remain stable while `valid` was high?
+Is `state` still one-hot? If these one-cycle predicates are vague, a larger
+sequence or property only amplifies that vagueness.
+
+This chapter therefore pauses at the bottom layer: how to state stable boolean
+facts using sampled values. Once those small predicates are trustworthy, the next
+chapter can string them into shapes over time.
+
 ## The boolean layer
 
 SVA is built in layers. At the bottom is the **boolean layer**: ordinary

@@ -17,6 +17,12 @@ property 把樣式變成義務。antecedent 指出觸發的條件，consequent �
 
 大多數 property 的錯誤其實都是契約的錯誤。antecedent 可能太寬、太少見，或意外地永遠不成立；consequent 可能早一個週期或晚一個週期；property 也可能因為觸發從未發生而 vacuous pass。請把每個 implication 都讀成一句話，左右兩半都檢查。
 
+## 從問題開始
+
+sequence 只回答「這個時間形狀有沒有出現」。但設計規則通常更進一步：「如果請求出現，回應就必須在期限內出現」、「如果 FIFO 已滿，就絕不能再寫」。這些句子都有一個觸發條件，以及觸發後的義務。
+
+property 就是把形狀變成義務的地方。左邊的 antecedent 問「什麼情況開啟檢查」，右邊的 consequent 問「開啟後設計欠我們什麼」。本章的 `|->`、`|=>`、vacuity 與強弱時序運算子，都是在精準化這份契約：何時開始欠、欠到什麼時候、沒有觸發時又該怎麼解讀。
+
 ## property 與 sequence
 
 **sequence** 描述的是一個會*匹配*或不匹配的樣式。**property** 則是一個會*成立*或*失敗*的陳述，也就是 `assert`、`assume` 或 `cover` 所評估的對象。property 由 sequence、布林與本章的運算子建構而成，其中最重要的運算子是 implication。

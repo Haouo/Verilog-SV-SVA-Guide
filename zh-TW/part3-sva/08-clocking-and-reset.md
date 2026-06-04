@@ -16,6 +16,12 @@ clocking 告訴 assertion 該用哪一條時間軸，reset 則告訴它規則在
 
 請把 `disable iff` 當成 contract 的一部分，而不是事後才補上的東西。reset 期間，有些訊號本來就會不穩定，或正被 force 到已知值；等到 reset 解除，assertion 才恢復運作，設計平常的承諾也才重新生效。reset 運算式應該貼合設計的這套脈絡。
 
+## 從問題開始
+
+一條 `req |=> gnt` 看起來像完整規則，但其實還少兩個前提：用哪個 clock 來數「下一拍」？reset 期間這條規則是否應該生效？如果這兩件事沒有說清楚，同一段 property 可能在錯誤的 edge 取樣，或在設計尚未初始化時誤報。
+
+所以 clocking 與 reset 不是樣板字串，而是規則的適用範圍。clock 定義時間軸，`disable iff` 定義哪些時間不算數。本章先把這個邊界畫清楚，再談 default clocking、default disable 與 multiclock assertion。
+
 ## assertion clock
 
 每個 concurrent assertion 都需要 clock。clock 決定取樣何時發生(第 2 章),也決定對每個 `##` 與 implication 而言「一個週期」是什麼意思。明確的寫法是在行內為它命名：

@@ -15,6 +15,12 @@
 
 這個差異在 simulation 與 formal 之間切換時最關鍵。在 simulation 裡，`assume` 會視工具而定，行為可能像 check，也可能像 constraint；在 formal 裡，錯誤的 `assume` 可能把你本來要找的行為整個移除。請把關鍵字當成意圖的一部分，而不是 property 外面的一層包裝。
 
+## 從問題開始
+
+同樣一句「這裡不該是非法狀態」，放在不同位置，意思會完全不同。若你在 `always_comb` 裡剛算完 `next_state` 就檢查它，那是程序流某一點的 sanity check；若你說「每個 clock 後 state 都必須合法」，那就是跨時間的 concurrent assertion。
+
+外層關鍵字也同樣改變責任歸屬。`assert` 是設計要保證的事，`assume` 是環境要遵守的事，`cover` 是你想確認曾經抵達的情境。本章先把這些外殼分清楚，後面才不會把同一段 SVA 語法誤讀成不同的契約。
+
 ## immediate assertion
 
 **immediate assertion**是一條程序式語句。它和 `if` 一樣，在控制流抵達它的當下評估運算式，並使用運算元的當前值。它身處程序式程式碼之內：`always` 區塊、`initial` 區塊或任務（task）。

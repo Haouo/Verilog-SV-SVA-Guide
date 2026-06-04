@@ -21,6 +21,20 @@ specification. Does one event happen while another remains true? Does an ack
 occur somewhere inside a busy window? Do two behaviors need to end together? Pick
 the operator that matches that sentence.
 
+## Start from the problem
+
+Chapter 5's sequences describe a single path such as "A followed by B." Real
+protocols are often not that linear. You may need to say "the data path and control
+path both complete," "`data` must not change while `valid` is held," or "`ack` must
+land inside the `busy` window." Those sentences are not cleanly expressed by adding
+more `##` delays.
+
+Sequence operations compare several time shapes on the same timeline: common
+starts, common ends, containment, persistence, or choosing the first of several
+possible matches. When reading this chapter, first identify the relationship in
+the specification sentence, then map it to `and`, `intersect`, `throughout`,
+`within`, or `first_match`.
+
 ## Combining sequences
 
 Chapter 5 built single sequences. Real intent often combines several patterns —

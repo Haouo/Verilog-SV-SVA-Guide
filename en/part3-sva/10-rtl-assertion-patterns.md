@@ -28,6 +28,18 @@ name the protocol rule in words and choose the clock, reset, latency, and
 vacuity check that match your block. The pattern gives structure; the design
 context gives truth.
 
+## Start from the problem
+
+The previous chapters teach the syntax pieces. When writing real RTL checks, you
+usually do not start with "I need an `s_until`." You start with "after `valid`,
+`data` must not move," "a full FIFO must not be written," or "only one requester
+can receive a grant." These rules recur across designs, often changing only signal
+names, latency bounds, and reset conditions.
+
+The pattern chapter translates common intents into SVA shapes you can adapt. For
+each pattern, read the bug it protects against before reading the property. If your
+protocol story differs, adjust the property instead of copying it mechanically.
+
 ## Request / acknowledge handshake
 
 The most common protocol shape: a request must be answered within a bounded window.

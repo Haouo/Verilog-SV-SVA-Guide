@@ -18,6 +18,12 @@ assertion pattern 是把常見的 RTL 契約翻成 SVA 的可重用對應。hand
 
 請把 pattern 當成起點，而不是萬用的 macro。在複製一條 property 之前，先用文字把協定規則講清楚，再依你的區塊選定 clock、reset、延遲與空真（vacuity）檢查。pattern 給你結構；唯有設計脈絡才給你真相。
 
+## 從問題開始
+
+前面章節教的是語法積木；真正寫 RTL 時，你通常不會從「我需要一個 `s_until`」開始，而是從「valid 之後 data 不能亂跳」、「FIFO 滿時不能寫」、「grant 一次只能給一個 requester」開始。這些規則在不同設計反覆出現，而且每次都只差訊號名稱、延遲界限與 reset 條件。
+
+pattern 章的目的，是把常見意圖先翻成可改寫的 SVA 形狀。讀每個 pattern 時，請先讀它保護的 bug，再讀 property；如果你的協定故事不同，就調整 property，而不是機械複製。
+
 ## Request / acknowledge handshake（請求／應答握手）
 
 最常見的協定形態：請求必須在有界的視窗內得到回應。

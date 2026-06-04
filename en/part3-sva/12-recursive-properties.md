@@ -21,6 +21,19 @@ rule until a terminating event, keep accepting the same form of progress, or
 prove a structure by induction. If a bounded window is enough, a simpler sequence
 is usually clearer.
 
+## Start from the problem
+
+Most design rules have a clear deadline: respond in one to four cycles, hold for
+three cycles, or drop on the next cycle. Delays, repetitions, and until operators
+cover those cases. A smaller class of rules looks like "until this ends, apply the
+same rule again," such as staying busy forever after lock, or carrying an
+obligation forward one cycle at a time.
+
+Recursive properties are only worth introducing for that self-similar shape. They
+are not a trick for making properties smarter; they are a compact way to write
+"this holds now, and next cycle we are back to the same question." This chapter
+shows that unfolding before warning when recursion is the wrong tool.
+
 ## What a recursive property is
 
 A named property may mention itself in its own body. Each reference applies the same

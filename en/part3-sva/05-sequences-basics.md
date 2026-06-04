@@ -22,6 +22,19 @@ and repetition means the same condition occupies several possible cycles. When a
 sequence surprises you, draw the start point, endpoint, and every cycle that can
 participate in a match.
 
+## Start from the problem
+
+Take a plain sentence: "`req` happens, then `gnt` must be seen on the next cycle."
+That sentence has two parts. `req` is the start point; `gnt` is not in the same
+cycle, but on the next clock. A single boolean can only say "this is true now"; it
+cannot say "something else happens next."
+
+A sequence fills that gap. `req ##1 gnt` splits the timeline into two sampling
+points: check `req` at the start, then check `gnt` at the next point. The fixed
+delays, ranged delays, and repetitions in this chapter all answer the same
+question: which clock cycles belong to this behavior shape, which ones are checked,
+and which ones are merely allowed to pass.
+
 ## What a sequence is
 
 A **sequence** (序列) describes events over clock cycles: a pattern of boolean

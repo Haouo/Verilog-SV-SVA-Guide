@@ -22,6 +22,17 @@ signals, parameters, clocking, and reset needed to state the rule, while hiding
 the SVA details that callers should not rewrite. Reuse is valuable only if the
 checker name and parameters make the intent unmistakable.
 
+## Start from the problem
+
+When the same handshake appears in ten modules, copying ten properties looks fast
+until it becomes maintenance work: some copies forget the antecedent cover, some use
+different latency parameters, and some miss the reset condition. What you really
+want to reuse is not a few lines of syntax, but a complete protocol-checking unit.
+
+Checkers and libraries package that unit: a clear port list, parameters,
+clock/reset conventions, and the assert/cover pair together. The caller supplies
+signals and protocol parameters without rewriting the property internals.
+
 ## The checker construct
 
 A **checker** (checker) is a SystemVerilog container built specifically to hold

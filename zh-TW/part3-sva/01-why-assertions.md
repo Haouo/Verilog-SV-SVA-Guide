@@ -16,6 +16,12 @@ assertion 是可執行的設計意圖。它不取代 RTL、testbench 或 specifi
 
 先把規則用一句話講清楚，再寫語法。「request 必須在四個 cycle 內得到 answer」是意圖，`req |-> ##[1:4] ack` 是其中一種寫法。原始句子模糊，property 就跟著模糊。好的 SVA 從一句精確的設計敘述開始。
 
+## 從問題開始
+
+先想一個很普通的除錯場景：某個下游模組收到錯誤資料，但真正的原因其實是上游三百個 cycle 前多寫了一次 FIFO。只靠輸出比對時，你看到的是症狀；你還得回頭追資料何時開始壞掉、哪個狀態先偏離、哪個協定先被違反。
+
+assertion 要補上的就是這段距離。它把「FIFO 滿的時候不能再寫」、「grant 不能憑空出現」、「state 必須保持 one-hot」這類局部規則放在源頭。接下來本章先建立這個動機，再說 immediate 與 concurrent assertion、simulation 與 formal 只是這個動機在不同工具中的落點。
+
 ## RTL 說明「如何做」；assertion 說明「什麼必須為真」
 
 一段 RTL 描述硬體*如何*算出結果，本身卻不說明那個結果*應該*是什麼。設計意圖（design intent），例如請求一定會被確認、狀態向量是 one-hot、FIFO 永不溢位，只存在於你的腦中、規格書中，或註解裡，這些地方工具都無法檢查。

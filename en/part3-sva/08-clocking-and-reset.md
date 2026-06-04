@@ -21,6 +21,18 @@ some signals are intentionally unstable or being forced into known values. After
 reset releases, the assertion resumes and the design's normal promises matter
 again. The reset expression should match that design story.
 
+## Start from the problem
+
+A property such as `req |=> gnt` looks complete, but it is missing two assumptions:
+which clock defines "next cycle," and should the rule apply during reset? If those
+are not explicit, the same property can sample the wrong edge or report failures
+while the design is not initialized yet.
+
+Clocking and reset are therefore not boilerplate. They define the rule's scope.
+The clock defines the timeline; `disable iff` defines which parts of that timeline
+do not count. This chapter draws that boundary before introducing default clocking,
+default disable, and multiclock assertions.
+
 ## The assertion clock
 
 Every concurrent assertion needs a clock. The clock fixes when sampling happens

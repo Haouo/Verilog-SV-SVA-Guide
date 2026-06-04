@@ -24,6 +24,19 @@ or accidentally impossible; the consequent may start one cycle too early or too
 late; the property may pass vacuously because the trigger never happened. Read
 every implication as a sentence and check both halves.
 
+## Start from the problem
+
+A sequence only answers "did this time shape appear?" Design rules usually go
+further: "if a request appears, a response must appear by the deadline," or "if a
+FIFO is full, a write must never happen." Those sentences have a trigger and an
+obligation after the trigger.
+
+A property is where a shape becomes an obligation. The antecedent asks "what opens
+the check?" The consequent asks "what does the design owe us after that?" The
+`|->`, `|=>`, vacuity, and strong or weak temporal operators in this chapter refine
+that contract: when the obligation starts, how long it lasts, and what it means if
+the trigger never happens.
+
 ## Property versus sequence
 
 A **sequence** (序列) describes a pattern that *matches* or does not. A

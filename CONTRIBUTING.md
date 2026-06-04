@@ -17,6 +17,8 @@ it consistent and easy to maintain.
 - Be concise, but not skeletal. A chapter should explain the design intuition
   before relying on syntax.
 - Prefer one or two paragraphs of mental model before the first dense example.
+- Prefer a problem-first bridge before definitions in tutorial material: describe
+  the practical design or debug problem, then show why the syntax exists.
 - Explain why a construct matters to RTL designers: hardware meaning, tool
   behavior, debug value, or assertion value.
 - For SVA, state the intent in words before presenting the property or sequence.

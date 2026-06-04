@@ -23,6 +23,19 @@ the tool explore impossible environments; a too-strong assumption may hide the
 bug. Good formal setup is therefore a model of the design's world, not just a bag
 of properties.
 
+## Start from the problem
+
+Simulation can only say "the stimulus I ran did not break this rule." Some
+questions are hard to exhaust with stimulus: can a FIFO underflow under any read
+and write interleaving, can an arbiter ever grant two ports at once, or does a
+deadlock appear only after a very deep state sequence?
+
+Formal rewrites the question as "under all allowed environment behavior, must this
+rule hold?" That means you write not only `assert` properties, but also `assume`
+properties to define the legal environment and `cover` properties to show scenarios
+are reachable. This chapter establishes those roles before introducing bounded
+proof, induction, and counterexamples.
+
 ## What formal does
 
 **Formal verification** (形式化驗證) proves a property over *every* legal input
