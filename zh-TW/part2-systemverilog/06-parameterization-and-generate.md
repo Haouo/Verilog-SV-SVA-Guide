@@ -38,7 +38,7 @@ module fifo #(
 );
 ```
 
-將參數型別指定為 `int` 意味著工具會檢查覆寫值是否為相容的整數。型別指定為 `bit` 則記錄了它是布林標誌。帶型別的參數能在闡述（elaboration）時就捕獲 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，而非在simulation時才發現。
+將參數型別指定為 `int` 意味著工具會檢查覆寫值是否為相容的整數。型別指定為 `bit` 則記錄了它是布林標誌。帶型別的參數能在闡述（elaboration）時就捕獲 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，而非在 simulation 時才發現。
 
 ### `localparam`
 
@@ -92,7 +92,7 @@ logic [ADDR_W-1:0] rd_addr, wr_addr;
 
 ## `generate` 區塊
 
-`generate` 區塊允許在闡述時進行結構性條件判斷和迴圈。它建立硬體結構，而非執行時行為。`generate` 區塊內的所有內容在simulation或合成開始之前就已確定。
+`generate` 區塊允許在闡述時進行結構性條件判斷和迴圈。它建立硬體結構，而非執行時行為。`generate` 區塊內的所有內容在 simulation 或合成開始之前就已確定。
 
 ### `generate for` — 複製結構
 
@@ -246,7 +246,7 @@ endmodule
 - 帶型別的 `parameter` 值記錄意圖並啟用闡述時的檢查。
 - `localparam` 表達呼叫者無法覆寫的衍生常數。
 - `$bits` 在闡述時測量任何型別的大小；`$clog2` 計算給定深度的最小位址寬度。
-- `generate for` 複製結構；`generate if` 在備選方案之間選擇；兩者都在simulation或合成之前的闡述時確定。
+- `generate for` 複製結構；`generate if` 在備選方案之間選擇；兩者都在 simulation 或合成之前的闡述時確定。
 - 具名的 generate 範圍（`begin : label`）改善可讀性並支援階層性引用。
 
 ---

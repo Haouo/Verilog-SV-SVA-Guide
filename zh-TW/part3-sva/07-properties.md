@@ -14,7 +14,7 @@
 ## 設計者 mental model
 
 property 把 pattern 變成 obligation。antecedent 命名 trigger；consequent 命名 design 在 trigger
-發生時必須做什麼。因此 implication 是一種 contract shape：如果左邊發生，右邊必須在指定 timing
+發生時必須做什麼。因此 implication 是一種 contract 形狀：如果左邊發生，右邊必須在指定 timing
 成立。
 
 大多數 property bug 都是 contract bug。antecedent 可能太寬、太少見、或意外 impossible；consequent
@@ -155,7 +155,7 @@ assert property (req_ack(wr_req, wr_ack, 8));
 
 - **混淆 `|->` 與 `|=>`。** 重疊在同一週期檢查 consequent；非重疊在下一週期檢查。請依回應是組合的還是被暫存的來選形式。
 - **忽略 vacuity。** 一個只會 vacuous pass 的 implication 什麼也沒檢查。請 cover antecedent 以確認它發生。
-- **在 simulation 中使用 `s_eventually`。** liveness property 沒有有限的反例。simulation 中請用有界窗口設定真實期限；把 `s_eventually` 保留給formal。
+- **在 simulation 中使用 `s_eventually`。** liveness property 沒有有限的反例。simulation 中請用有界窗口設定真實期限；把 `s_eventually` 保留給 formal。
 - **以 `until` 忘記端點。** 單純的 `until` 排除 `q` 成立的那個週期；當 `p` 也必須在該週期成立時請用 `until_with`。
 - **在事件受保證時選了弱形式。** 若釋放事件必須發生，請用強 `s_` 形式，使其缺席成為失敗，而非無聲的通過。
 
@@ -165,7 +165,7 @@ assert property (req_ack(wr_req, wr_ack, 8));
 - `|->` 在同一週期檢查 consequent；`|=>` 在下一週期檢查。
 - antecedent 從不匹配時發生 vacuous pass；cover antecedent 以使檢查保持有意義。
 - `not`、`and`、`or`、`if/else` 組合 property；`not` 表達安全性。
-- `nexttime`、`until`／`until_with` 與 `eventually` 有弱與強形式；強形式要求所等待的事件發生且適合formal，有界形式則適合 simulation。
+- `nexttime`、`until`／`until_with` 與 `eventually` 有弱與強形式；強形式要求所等待的事件發生且適合 formal，有界形式則適合 simulation。
 
 ---
 

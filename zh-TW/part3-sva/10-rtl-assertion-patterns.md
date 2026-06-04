@@ -18,7 +18,7 @@ assertion pattern 是把常見 RTL contract 翻成 SVA 的 reusable translation�
 boundary、one-hot state、no-unknown rule 會在很多 design 出現；每次都會回到同樣問題：什麼
 trigger rule？什麼必須 stable？允許多少 latency？failure 應該代表什麼？
 
-請把 pattern 當成 starting point，而不是 magic macro。copy property 前，先用文字命名 protocol
+請把 pattern 當成 starting point，而不是萬用 macro。copy property 前，先用文字命名 protocol
 rule，並選擇符合 block 的 clock、reset、latency、vacuity check。pattern 給 structure；design
 context 才給 truth。
 

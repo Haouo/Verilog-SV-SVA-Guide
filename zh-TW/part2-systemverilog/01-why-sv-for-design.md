@@ -11,11 +11,11 @@
 
 ## 設計者 mental model
 
-SystemVerilog 讓 RTL 可以更直接地 state intent。`logic` 減少 `wire`/`reg` 的儀式感，specialized
-`always_*` block 宣告 process 應該 infer 哪一種 hardware，`unique` 或 `priority` 則告訴 tool
-designer 對 decision tree 的假設。
+SystemVerilog 讓 RTL 可以更直接地表達 intent。`logic` 減少 `wire`/`reg` 的儀式感，specialized
+`always_*` block 宣告 process 應該 infer 哪一種 hardware，`unique` 或 `priority` 則把 designer
+對 decision tree 的假設交給 tool 檢查。
 
-重點不是為了新語法而用新語法，而是把 knowledge 從 comment 和 coding folklore 移到 simulator、
+重點不是為了新語法而用新語法，而是把設計知識從 comment 和 coding folklore 移到 simulator、
 linter、synthesis tool 可以 check 的 construct 裡。當一個 SystemVerilog construct 能降低 hardware
 描述的 ambiguity，它就值得使用。
 
@@ -37,7 +37,7 @@ logic [7:0] bus;
 logic [7:0] count;
 ```
 
-4-state 值（0、1、X、Z）被完整保留。合成（synthesis）工具忽略 X 與 Z；它們存在於simulation中，用於建模未初始化的狀態和高阻抗（high-impedance）。
+4-state 值（0、1、X、Z）被完整保留。合成（synthesis）工具忽略 X 與 Z；它們存在於 simulation 中，用於建模未初始化的狀態和高阻抗（high-impedance）。
 
 ### 何時保留 `wire`
 
@@ -45,11 +45,11 @@ logic [7:0] count;
 
 ## 特化的 always 區塊
 
-Verilog 的 `always @(*)` 能用，但它是泛用的：它不記錄你意圖使用正反器、閂鎖器還是組合邏輯，編譯器和simulator也無法檢查程式碼是否符合你的意圖。SystemVerilog 提供三種具有明確目的的形式。
+Verilog 的 `always @(*)` 能用，但它是泛用的：它不記錄你意圖使用正反器、閂鎖器還是組合邏輯，編譯器和 simulator 也無法檢查程式碼是否符合你的意圖。SystemVerilog 提供三種具有明確目的的形式。
 
 ### `always_comb`
 
-使用 `always_comb` 表示組合邏輯。simulator自動從區塊中讀取的所有變數推導敏感度列表（sensitivity list）——你完全不需要寫 `@(*)`。更重要的是，工具會檢查此區塊確實是組合邏輯：每個輸出必須在區塊的每條執行路徑上都被指定，且不允許有回授。
+使用 `always_comb` 表示組合邏輯。simulator 自動從區塊中讀取的所有變數推導敏感度列表（sensitivity list）——你完全不需要寫 `@(*)`。更重要的是，工具會檢查此區塊確實是組合邏輯：每個輸出必須在區塊的每條執行路徑上都被指定，且不允許有回授。
 
 ```systemverilog
 always_comb begin
@@ -61,7 +61,7 @@ always_comb begin
 end
 ```
 
-若你不小心在某條路徑上漏掉某個變數的指定，lint 工具或simulator會報告違規。使用普通的 `always @(*)`，你會悄悄地推斷出一個閂鎖器。
+若你不小心在某條路徑上漏掉某個變數的指定，lint 工具或 simulator 會報告違規。使用普通的 `always @(*)`，你會悄悄地推斷出一個閂鎖器。
 
 `always_comb` 也在時間零之後的一個 delta 時間點啟動，確保此區塊在任何邊緣觸發區塊讀取其輸出之前先完成求值。這與組合邏輯在時脈緣之前穩定的行為一致。
 
@@ -118,7 +118,7 @@ always_comb begin
 end
 ```
 
-使用 `unique`，合成工具可以在假設各分支互斥的前提下進行最佳化。若 case 表達式同時匹配多個分支或完全不匹配，simulator會在執行時發出警告。這消除了那些本應完整解碼的 case 中的優先級編碼和推斷的閂鎖器。
+使用 `unique`，合成工具可以在假設各分支互斥的前提下進行最佳化。若 case 表達式同時匹配多個分支或完全不匹配，simulator 會在執行時發出警告。這消除了那些本應完整解碼的 case 中的優先級編碼和推斷的閂鎖器。
 
 ### `priority case`
 
@@ -149,21 +149,21 @@ else if (state == DECODE)   next = EXECUTE;
 else if (state == EXECUTE)  next = IDLE;
 ```
 
-在完整解碼的有限狀態機（FSM）狀態轉換上使用 `unique if`，告訴工具每個合法狀態都已覆蓋且無兩個條件重疊。工具在simulation時進行兩者的檢查，並在合成時可進行最佳化。
+在完整解碼的有限狀態機（FSM）狀態轉換上使用 `unique if`，告訴工具每個合法狀態都已覆蓋且無兩個條件重疊。工具在 simulation 時進行兩者的檢查，並在合成時可進行最佳化。
 
 ## 常見陷阱
 
 - **使用 `reg` 卻意圖是 `logic`。** 名稱容易誤導；將所有非真正多驅動線網的 RTL 訊號都改為 `logic`。
 - **對循序邏輯寫 `always @(*)`。** 一個讀取時脈緣的 `always @(*)` 區塊具有非直覺的敏感度列表。請使用 `always_ff` 並明確地將時脈加入列表。
 - **忘記 `always_comb` 會檢查完整性。** 它不會悄悄允許不完整的分支——這正是它的目的。請加入 `default` 或涵蓋所有情況。
-- **對不完整的集合使用 `unique`。** 若輸入合法上可能落在列出的分支之外，請勿使用 `unique`；你會得到虛假的simulation警告。
+- **對不完整的集合使用 `unique`。** 若輸入合法上可能落在列出的分支之外，請勿使用 `unique`；你會得到虛假的 simulation 警告。
 - **在 `always_ff` 中混用阻塞式指定 `=`。** Lint 工具會將此標記為違反 `always_ff` 合約。請使用 `<=`。
 
 ## 小結
 
 - `logic` 統一了 RTL 訊號的 `wire` 與 `reg`；除真正的多驅動線網外，一律使用它。
 - `always_comb`、`always_ff`、`always_latch` 使程序區塊的意圖明確，並讓工具能夠檢查設計規則。
-- `unique case` 聲明互斥且完整的決策；`priority case` 聲明按優先級排序且完整的決策；兩者在simulation時都被檢查。
+- `unique case` 聲明互斥且完整的決策；`priority case` 聲明按優先級排序且完整的決策；兩者在 simulation 時都被檢查。
 - 這些特性在合成時零成本——它們增加資訊，不增加硬體。
 
 ---

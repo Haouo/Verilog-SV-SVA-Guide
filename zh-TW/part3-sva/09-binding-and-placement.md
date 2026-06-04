@@ -12,8 +12,8 @@
 
 ## 設計者 mental model
 
-placement 決定 assertion 由誰 own，以及它能看見什麼。inline assertion 跟 RTL 住在一起，最適合
-表達 designer 自己的 local contract。bound assertion module 則適合在不修改 existing design 的情況
+placement 決定 assertion 歸誰負責，以及它能看見什麼。inline assertion 跟 RTL 住在一起，最適合
+表達 designer 自己的 local contract。bound assertion module 則適合在不修改既有 design 的情況
 下 attach check，或讓 verification environment 把 checker 分開管理。
 
 `bind` 強大的地方在於分離 source ownership 與 observation。但如果 bound module 依賴 fragile
@@ -22,7 +22,7 @@ internal name 或不清楚的 hierarchy path，也很容易誤用。好的 place
 
 ## assertion 放在哪裡
 
-concurrent assertion幾乎可以放在任何能放連續陳述的地方：設計模組本身、獨立模組、`interface`，或 `checker` 之中。選擇主要關乎權責歸屬與侵入程度。
+concurrent assertion 幾乎可以放在任何能放連續陳述的地方：設計模組本身、獨立模組、`interface`，或 `checker` 之中。選擇主要關乎權責歸屬與侵入程度。
 
 - **內嵌（inline）** assertion 緊貼著它所檢查的 RTL。在脈絡中易讀，並隨程式碼一起移動，但會增加設計檔案的行數，並需要對它的編輯權限。
 - **獨立（separate）** assertion 放在自己的模組中，與 RTL 分開，之後再連接起來。設計檔案維持不動——當 RTL 為共用、由工具產生，或屬於其他團隊所有時，這一點很重要。

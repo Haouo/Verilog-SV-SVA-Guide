@@ -7,18 +7,18 @@
 ## 如何使用這個 appendix
 
 請在已經理解 construct 背後 intent 之後，再使用這份 cheat-sheet。它是為 recall 設計的，不是
-first learning。如果某一列讓你覺得意外，先沿著 chapter link 回去重建 timing model，再把 syntax
+初學入口。如果某一列讓你覺得意外，先沿著 chapter link 回去重建 timing model，再把 syntax
 用在 real RTL 或 formal environment。
 
 最安全的 workflow 是 sentence first, operator second：先用文字 state protocol rule，再選 sampled
-fact 或 sequence shape，最後用這個 appendix 確認 spelling。SVA syntax 很 compact；design sentence
-讓它保持 honest。
+fact 或 sequence shape，最後用這個 appendix 確認寫法。SVA syntax 很 compact；先寫清楚 design sentence，
+可以避免 syntax 看似正確、意圖卻已經偏掉。
 
 ---
 
 ## sampled value 函式
 
-用於 concurrent assertion內部。所有值均取自 assertion clock 的 **Preponed** 區。
+用於 concurrent assertion 內部。所有值均取自 assertion clock 的 **Preponed** 區。
 → [第三部 · 第 4 章](../part3-sva/04-boolean-layer.md)
 
 | 函式 | 含義 | 簡短範例 |
@@ -36,7 +36,7 @@ fact 或 sequence shape，最後用這個 appendix 確認 spelling。SVA syntax 
 
 ---
 
-## sequence operation 子
+## sequence operator
 
 sequence 描述跨越 clock 週期的事件樣式。
 → [第三部 · 第 5 章](../part3-sva/05-sequences-basics.md)、[第 6 章](../part3-sva/06-sequence-operations.md)
@@ -121,9 +121,9 @@ property 將 sequence 組合成可檢查的時序陳述。
 | 陳述 | 用途 | 典型放置位置 |
 |---|---|---|
 | `assert property (p)` | 驗證 `p` 成立；失敗視為錯誤 | RTL 模組、checker、bind |
-| `assume property (p)` | 限制輸入；formal tool 視為公理 | formal環境 |
+| `assume property (p)` | 限制輸入；formal tool 視為公理 | formal environment |
 | `cover property (p)` | 記錄 `p` 至少被觀察到一次 | RTL 模組、checker |
-| `restrict property (p)` | 僅供 formal tool：硬性約束（simulation 無效果） | formal環境 |
+| `restrict property (p)` | 僅供 formal tool：硬性約束（simulation 無效果） | formal environment |
 
 語法樣式：
 ```systemverilog

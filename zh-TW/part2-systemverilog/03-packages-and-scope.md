@@ -13,9 +13,9 @@
 
 package 是 shared design facts 的 named home。如果多個 module 同意同一個 bus width、command
 encoding 或 struct shape，這個 agreement 應該存在一個地方，而不是 copy 到每個 file。import
-package 就是 module 可見地宣告：我參與這份 shared contract。
+package 則是 module 可見地宣告：我參與這份 shared contract。
 
-scope rule 是在控制 name 從哪裡來。explicit import 和 qualified name 讓 dependency 可讀；`$unit`
+scope rule 用來控制 name 從哪裡來。explicit import 和 qualified name 讓 dependency 可讀；`$unit`
 和過大的 wildcard import 可能讓 dependency 隱形。block 越 reusable，package dependency 越值得
 寫得明白。
 

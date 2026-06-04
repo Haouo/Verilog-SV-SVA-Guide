@@ -17,8 +17,8 @@ passing assertion 只回答一個問題：observed attempt 沒有違反這條 ru
 design 有沒有 exercise assertion 想保護的 behavior？
 
 對每條重要 implication，都要問什麼 evidence 會讓你相信這個 check 有 meaning。這個 evidence
-常常是 antecedent 上的 `cover property`，或相關 scenario。assertion closure 不是只有 green check，
-而是 green check 加上 check 確實被 exercised 的信心。
+常常是 antecedent 上的 `cover property`，或相關 scenario。assertion closure 不只是看到通過結果，
+還要確認這些 check 確實被 exercised。
 
 ## Cover：它真的發生了嗎？
 

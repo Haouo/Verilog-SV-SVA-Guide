@@ -12,7 +12,7 @@
 
 ## 設計者 mental model
 
-clocking 告訴 assertion 使用哪一條 timeline。reset 告訴它 rule 什麼時候不應該 apply。缺少這兩者，
+clocking 告訴 assertion 使用哪一條 timeline；reset 則告訴它 rule 什麼時候不應該 apply。缺少這兩者，
 即使 temporal property 本身正確，也可能在 initialization 失敗，或 sample 到 protocol 的錯誤 edge。
 
 請把 `disable iff` 當成 contract 的一部分，而不是事後補上的東西。reset 期間，有些 signal 本來

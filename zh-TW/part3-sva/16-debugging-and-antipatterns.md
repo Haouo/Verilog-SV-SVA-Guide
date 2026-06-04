@@ -15,10 +15,10 @@
 
 failed assertion 是 debugging instrument。它應該告訴你哪個 intent 被 violated、violating attempt
 何時開始、以及什麼 evidence 讓 consequent fail。如果 property 太大、clock edge 錯、或允許 vacuous
-pass，它就不再是 instrument，而會變成 noise。
+pass，它就不再提供線索，而會變成干擾訊息。
 
 debug SVA 因此同時是在 debug design，也是在 debug specification。assertion fail 時兩邊都要檢查：
-RTL 可能錯，property 也可能 encode 了錯的 rule。好的 anti-pattern list 會訓練你快速認出第二種情況。
+RTL 可能錯，property 也可能 encode 了錯的 rule。anti-pattern list 的價值，就是幫你快速辨認第二種情況。
 
 ## 解讀失敗的 assertion
 

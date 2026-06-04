@@ -12,7 +12,7 @@
 
 ## 設計者 mental model
 
-concurrent assertion 觀察的是 sampled version of the design。它不是單純讀同一個 time slot 裡
+concurrent assertion 觀察的是 design 的 sampled version。它不是單純讀同一個 time slot 裡
 procedural block 最新 assign 的 value。Preponed region sampling 讓 assertion 看到 clock edge 當下
 已存在的 value，這比較接近 flip-flop 對 synchronous logic 的推理方式。
 

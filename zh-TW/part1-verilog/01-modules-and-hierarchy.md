@@ -13,12 +13,12 @@
 
 `module` 不只是文字容器，而是 design 用來命名一塊 hardware、宣告 boundary 上有哪些 signal、
 並讓 elaboration 建出 instance hierarchy 的單位。讀一個 module 時，先把 port list 和
-parameter 當成 contract 讀，再往下看 implementation。
+parameter 視為 contract，再往下看 implementation。
 
 好的 hierarchy 會降低一次需要理解的 context。caller 不應該需要知道 child block 裡每個
-internal register；它應該只需要知道 ports、parameter 的意義，以及 timing expectation。
-所以本章不只講 `module ... endmodule` syntax，也花時間講 naming、instantiation 和
-parameterization。
+internal register；它應該只需要理解 ports、parameter 的意義，以及 timing expectation。
+所以本章不只講 `module ... endmodule` syntax，也會說明 naming、instantiation 和
+parameterization，因為這些共同決定 design boundary 是否清楚。
 
 ## 模組是設計的基本單位
 
@@ -76,7 +76,7 @@ endmodule
 ## 階層與闡述
 
 工具讀入設計時會執行*闡述（elaboration）*：選定頂層模組、建立其實例，再建立這些實例的
-實例，依此類推，直到整棵樹建構完成。參數會在這個步驟解析，發生在simulation或合成開始之前。
+實例，依此類推，直到整棵樹建構完成。參數會在這個步驟解析，發生在 simulation 或合成開始之前。
 結果是一個完全展開、由具體模組構成的階層。
 
 某模組內的訊號，除非透過埠，否則在其他模組中不可見。這是刻意的設計。埠是模組與其

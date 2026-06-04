@@ -10,9 +10,9 @@
 
 ## 閱讀風格
 
-這份 guide 應該被當成 designer 的 working reference，而不只是 syntax list。每章現在會先說明該
-construct 背後的 mental model，再進入 example 與 pitfall。如果你只是快速瀏覽，請先讀那段
-mental-model section；它會告訴你這個 syntax 想把什麼 intent 明確化。
+這份指南可以當成設計者的 working reference，而不只是 syntax list。每章會先說明該 construct
+背後的 mental model，再進入 example 與 pitfall。如果你只是快速瀏覽，請先讀這段 mental model；
+它會告訴你這個 syntax 想把什麼 intent 明確化。
 
 ## 目錄
 

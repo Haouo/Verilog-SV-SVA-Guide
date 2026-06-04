@@ -5,30 +5,30 @@
 ## 學習目標
 
 - 區分 `assert`、`assume` 與 `cover` 在 formal verification 中的角色。
-- 採取formal的思維方式：對*所有*合法輸入的證明，而非 sampling 的軌跡（trace）。
+- 採取 formal 的思維方式：對*所有*合法輸入的證明，而非 sampling 的軌跡（trace）。
 - 以 `assume` 約束輸入空間。
-- 區分**safety property**（safety property）與**liveness property**（liveness property）。
+- 區分 **safety property** 與 **liveness property**。
 - 分辨有界（bounded）與無界（unbounded）證明，並解讀其結果。
-- 判斷設計者何時該動用formal，而非 simulation。
+- 判斷設計者何時該動用 formal，而非 simulation。
 
 ## 設計者 mental model
 
 formal verification 把問題從「我跑過的 test 有沒有發生？」改成「在所有 allowed behavior 下，這件事
-是否可能發生？」assertion 變成 proof obligation，assumption 定義 legal environment，cover 則問
-某個 scenario 是否 reachable。
+是否可能發生？」在這個視角裡，assertion 是 proof obligation，assumption 定義 legal environment，
+cover 則用來詢問某個 scenario 是否 reachable。
 
 因此 assumption 跟 assertion 一樣重要。太弱的 assumption 可能讓 tool 探索 impossible environment；
-太強的 assumption 可能藏住 bug。好的 formal setup 是 design world 的 model，而不只是一袋 property。
+太強的 assumption 可能藏住 bug。好的 formal setup 會描述設計與環境的互動，而不只是一袋 property。
 
-## formal做什麼
+## formal 做什麼
 
-**formal verification**（formal verification）以數學方式，對*每一個*合法的輸入 sequence 證明某 property，而非檢查 simulation 恰好產生的有限軌跡。simulation 回答的是「該 property 在我跑過的刺激上成立」，而formal回答的是「該 property 對*所有*刺激皆成立，否則這裡有一個反例」。
+**formal verification** 以數學方式，對*每一個*合法的輸入 sequence 證明某 property，而非檢查 simulation 恰好產生的有限軌跡。simulation 回答的是「該 property 在我跑過的刺激上成立」，而 formal 回答的是「該 property 對*所有*刺激皆成立，否則這裡有一個反例」。
 
 同一批 SVA property 同時驅動兩者。assertion 本身毫無改變；改變的是工具。這正是把意圖寫成 assertion 的實際回報：一條 property 同時服務於 simulation 與證明。
 
 ## formal 中的 assert、assume、cover
 
-在formal情境中，這三個陳述各自承擔鮮明而相異的角色。
+在 formal 情境中，這三個陳述各自承擔鮮明而相異的角色。
 
 - **`assert`** —— 工具必須*證明*的義務。證明要嘛對所有合法輸入皆成立，要嘛產生一條違反它的反例軌跡。
 - **`assume`** —— 工具可以*依賴*的約束。它把輸入空間限制到合法的刺激，因此證明只考慮滿足它的輸入。
@@ -45,17 +45,17 @@ assert property (@(posedge clk) count <= DEPTH);
 cover  property (@(posedge clk) full);
 ```
 
-這套劃分是formal的核心：`assume` 說環境承諾了什麼，`assert` 說在那些承諾下設計必須保證什麼，而 `cover` 確認證明空間非空。
+這套劃分是 formal 的核心：`assume` 說環境承諾了什麼，`assert` 說在那些承諾下設計必須保證什麼，而 `cover` 確認證明空間非空。
 
-## formal的思維方式
+## formal 的思維方式
 
-simulation 對 bug 是存在性的：若你的刺激恰好命中，它便找到 bug。formal是全稱性的：它考慮約束所允許的每一個輸入，因此*只要約束內存在 bug*，它就會找到，無需撰寫刺激。
+simulation 對 bug 是存在性的：若你的刺激恰好命中，它便找到 bug。formal 是全稱性的：它考慮約束所允許的每一個輸入，因此*只要約束內存在 bug*，它就會找到，無需撰寫刺激。
 
 這轉移了工程的著力點。你不再撰寫測試去誘發設計；你為「什麼必須為真」撰寫 `assert`，為「環境可以做什麼」撰寫 `assume`，然後由工具搜尋。風險也隨之轉移：過緊的 `assume` 可能無聲地排除掉恰好能暴露 bug 的那些輸入。在 formal 中，約束與 assertion 同等重要。
 
 ## 以 assume 約束
 
-若無約束，formal會探索*所有*輸入組合，包括真實環境從不產生的那些——非法的協定 sequence、不可能的 reset、保留的 opcode。那些會產生假反例。`assume` 切割出合法的輸入空間：
+若無約束，formal 會探索*所有*輸入組合，包括真實環境從不產生的那些——非法的協定 sequence、不可能的 reset、保留的 opcode。那些會產生假反例。`assume` 切割出合法的輸入空間：
 
 ```systemverilog
 // The protocol guarantees req stays high until ack — tell the prover
@@ -69,10 +69,10 @@ assume property (@(posedge clk) $initstate |-> !rst_n);
 
 ## 安全性與活性
 
-formal以不同方式處理兩類 property。
+formal 以不同方式處理兩類 property。
 
-- **safety property**說「壞事絕不發生」。它的違反有一條*有限*的反例——一條有界長度、終止於壞週期的軌跡。FIFO 溢位、兩個同時的 grant、valid 酬載上的 `X`：皆屬安全性。
-- **liveness property**說「好事終將發生」。它的違反是一條*無限*軌跡，其中好事件永不到來。「每個請求終將被授予」即屬活性。
+- **safety property** 說「壞事絕不發生」。它的違反有一條*有限*的反例——一條有界長度、終止於壞週期的軌跡。FIFO 溢位、兩個同時的 grant、valid 酬載上的 `X`：皆屬安全性。
+- **liveness property** 說「好事終將發生」。它的違反是一條*無限*軌跡，其中好事件永不到來。「每個請求終將被授予」即屬活性。
 
 ```systemverilog
 // Safety: a bad state is unreachable
@@ -95,7 +95,7 @@ formal engine 有兩種保證的型態。
 
 > **設計意圖。** formal 把 assertion 從「對你跑過的軌跡的檢查」變成「對環境所允許的每一條軌跡的證明」。設計者以 `assert` 陳述意圖，以 `assume` 陳述環境的承諾，以 `cover` 確認可達性；搜尋由工具完成。思維是全稱的，而非存在的——而約束所承載的意圖不亞於 assertion，因為一個錯誤的 `assume` 可能掩蓋你正在追捕的那個 bug。
 
-## 何時該動用formal
+## 何時該動用 formal
 
 formal 在特定情境中見效：
 
@@ -104,7 +104,7 @@ formal 在特定情境中見效：
 - **bug 獵捕**於某個局部區塊上，讓引擎找出你無法寫出測試的那條反例。
 - 跨大型結構的**連接性與配置**檢查。
 
-simulation 仍是資料路徑吞吐、系統層級情境，以及任何需要長時間真實刺激之事的正確工具。兩者互補：formal proof 角落，simulation 執行整體。
+simulation 仍適合資料路徑吞吐、系統層級情境，以及任何需要長時間真實刺激的檢查。兩者互補：formal 用來證明角落與不變式，simulation 用來執行整體情境。
 
 ## 常見陷阱
 
@@ -116,11 +116,11 @@ simulation 仍是資料路徑吞吐、系統層級情境，以及任何需要長
 
 ## 小結
 
-- formal對所有合法輸入證明某 property；simulation 檢查你跑過的軌跡。
+- formal 對所有合法輸入證明某 property；simulation 檢查你跑過的軌跡。
 - `assert` 是待證的義務，`assume` 約束輸入空間，`cover` 檢查可達性。
 - 思維是全稱的：撰寫意圖與約束，讓工具搜尋；約束所承載的意圖不亞於 assertion。
 - safety property 有有限反例並主導簽核；活性需要無界推理與公平性。
-- 有界證明快速涵蓋固定視窗；無界證明給出完整保證但較難收斂。對深層控制邏輯與絕對不變式請動用formal。
+- 有界證明快速涵蓋固定視窗；無界證明給出完整保證但較難收斂。對深層控制邏輯與絕對不變式請動用 formal。
 
 ---
 

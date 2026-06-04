@@ -12,7 +12,7 @@
 
 ## 設計者 mental model
 
-sequence 是 behavior over time 的 shape。它還沒有說這個 behavior 是否 required；它只是說什麼
+sequence 是跨時間的 behavior shape。它還沒有說這個 behavior 是否 required；它只是說什麼
 event pattern 會 count as a match。這個分離很有用：先定義 pattern，再用 property 說什麼時候
 這個 pattern 必須發生或不可以發生。
 

@@ -11,7 +11,7 @@
 不是說每個舊 construct 都錯，而是在指出 SystemVerilog 哪些地方能把同一個 intent 寫得更 explicit，
 也更容易被 tool check。
 
-採用某個 feature 前，建議先沿著 link 回到對應 chapter。短表格給 motivation，但 chapter 會說明
+採用某個 feature 前，建議先沿著 link 回到對應 chapter。短表格提供 motivation，但 chapter 會說明
 constraint、pitfall，以及 synthesis-aware context。
 
 ---

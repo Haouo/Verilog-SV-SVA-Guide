@@ -16,13 +16,13 @@ local variable 讓 assertion 記住某一次 attempt 關聯的 value。這是 da
 不是只說「某個 response 發生了」，而是說「這個 request 的 response 必須 match 這個 request
 開始時 sampled 的 data」。每個 concurrent attempt 都有自己的 variable storage。
 
-這讓 local variable 很強，也很容易誤解。assignment 發生在 sampled assertion world，不是 RTL
+這讓 local variable 很強，也很容易誤解。assignment 發生在 sampled assertion 語境，不是 RTL
 procedural update。當 property 有 overlapping attempt 時，把每個 attempt 分開畫，追蹤哪個 sampled
 value 屬於哪個 consequent。
 
 ## 區域變數為何存在
 
-implication將觸發與回應關聯起來，但回應往往必須*對照在觸發時捕捉的值*來檢查。一次讀取要回傳當初寫入的資料；一個回應要帶有其請求的標籤。單純的布林 property 無法跨週期記住所捕捉的值。**區域變數**可以：它是某一次 assertion 評估嘗試所私有的儲存空間，在某個 sequence 元素匹配時寫入，並在稍後的元素中讀取。
+implication 將觸發與回應關聯起來，但回應往往必須*對照在觸發時捕捉的值*來檢查。一次讀取要回傳當初寫入的資料；一個回應要帶有其請求的標籤。單純的布林 property 無法跨週期記住所捕捉的值。**區域變數**可以：它是某一次 assertion 評估嘗試所私有的儲存空間，在某個 sequence 元素匹配時寫入，並在稍後的元素中讀取。
 
 ```systemverilog
 // Capture the address at request, check the response uses the same one
@@ -88,7 +88,7 @@ assert property (pipe_add1);
 - **獨立的副本。** assertion 的每一次起始都取得一組全新的區域變數。並行、重疊的嘗試從不共用儲存空間，因此同時在飛行的多筆交易各自被分開追蹤。
 - **沿匹配流動。** 區域變數的值只沿著*匹配中*的執行緒往前流動。若 sequence 分岔（例如透過 `or` 或有界重複），每條分支各帶自己的副本，且在某分支上指定的值不會在另一分支上可見。
 
-正是這套流動模型，使區域變數能與 sequence operation 子乾淨地組合：值隨著實際匹配的執行緒移動，並在該執行緒失敗時消失。
+正是這套流動模型，使區域變數能與 sequence operator 乾淨地組合：值隨著實際匹配的執行緒移動，並在該執行緒失敗時消失。
 
 ```systemverilog
 // Count consecutive 'beat's and require exactly LEN of them before 'last'

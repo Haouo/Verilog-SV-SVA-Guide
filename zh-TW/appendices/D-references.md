@@ -6,9 +6,9 @@
 
 ## 如何使用這個 appendix
 
-reference 是本 guide 技術主張的 backstop。language rule 以 standard 為準；design practice、example、
-interpretation 則可參考 book 或 paper。當 chapter 寫得更詳細時，supporting source 應該在這個
-appendix 變得可見。
+reference 是本指南技術主張的 backstop。language rule 以 standard 為準；design practice、example、
+interpretation 則可參考 book 或 paper。當 chapter 寫得更詳細時，supporting source 也應該在這個
+appendix 中變得可見。
 
 ---
 
@@ -21,7 +21,7 @@ Institute of Electrical and Electronics Engineers, 2006.
 **IEEE Std 1800-2023 — IEEE Standard for SystemVerilog — Unified Hardware Design,
 Specification, and Verification Language.**
 Institute of Electrical and Electronics Engineers, 2023.
-*第二部與第三部的規範性依據；取代 IEEE 1800-2017。assertion 語意、sampled value 模型、sequence 與 property 代數、clocking block（clocking block）以及 checker，均在此標準中規定。*
+*第二部與第三部的規範性依據；取代 IEEE 1800-2017。assertion 語意、sampled value 模型、sequence 與 property 代數、clocking block 以及 checker，均在此標準中規定。*
 
 ---
 
@@ -29,7 +29,7 @@ Institute of Electrical and Electronics Engineers, 2023.
 
 **Cohen, Ben; Venkataramanan, Srinivasan; Kumari, Ajeetha 著。**
 *SystemVerilog Assertions Handbook.* 第 4 版。Createspace, 2015。
-*目前最完整的 SVA 實務著作。以大量實例涵蓋完整 assertion language，並提供方法論指引與 simulation/formal tool 使用方式。推薦給想在本指南範圍之外更深入學習的設計者。*
+*目前最完整的 SVA 實務著作。以大量實例涵蓋完整 assertion language，並提供方法論指引與 simulation / formal tool 使用方式。推薦給想在本指南範圍之外更深入學習的設計者。*
 
 **Cohen, Ben; Venkataramanan, Srinivasan; Kumari, Ajeetha; Piper, Lisa 著。**
 *A Practical Guide to Adopting the Universal Verification Methodology (UVM).*
@@ -75,7 +75,7 @@ Verification Processes in Verilog.* 第 2 版。Kluwer Academic, 2001。
 ## 延伸閱讀
 
 - **Accellera** 官網（accellera.org）保存了早期的 SystemVerilog 語言參考手冊及原始捐獻文件，有助於了解語言的演進脈絡。
-- **SNUG**（snug-universal.org）與 **DVCon** 的論文集收錄了大量關於 SVA 方法論、formal verification 流程和可合成撰寫風格的實務論文，註冊後大多可免費取得。
+- **SNUG**（snug-universal.org）與 **DVCon** 的論文集收錄了大量關於 SVA 方法論、 formal verification 流程和可合成撰寫風格的實務論文，註冊後大多可免費取得。
 - 各工具廠商（Synopsys、Cadence、Siemens EDA、Aldec）均發布針對其 emulation 與 formal engine 的應用注釋；當標準語意與工具特定行為有差異時，應查閱這些文件。
 
 ---

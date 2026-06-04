@@ -6,15 +6,15 @@
 
 - 說明 RTL 所描述的內容與 assertion 所描述的內容之間的差異。
 - 解釋 Assertion-Based Verification (ABV) 以及為何它屬於設計者的工作。
-- 將 assertion 定位於設計流程中：simulation、formal、與 emulator（emulation）。
+- 將 assertion 定位於設計流程中：simulation、 formal、與 emulator（emulation）。
 - 一眼分辨 immediate assertion 與 concurrent assertion。
 - 理解「在源頭失敗」為何優於「在下游失敗」。
 
 ## 設計者 mental model
 
 assertion 是 executable intent。它不取代 RTL、testbench 或 specification；它把三者接起來，
-用一條 rule 說明 design 必須遵守什麼。最好的 assertion 夠小，失敗時只有一個清楚理由；也夠靠近
-RTL，讓 failing cycle 本身就能解釋 bug。
+用一條 rule 說明 design 必須遵守什麼。好的 assertion 夠小，失敗時只有一個清楚理由；也夠靠近
+RTL，讓 failing cycle 本身就能指出 bug 的位置。
 
 先從 English/中文規則開始，再寫 syntax。「request 必須在四個 cycle 內被 answer」是 intent；
 `req |-> ##[1:4] ack` 是其中一種 encoding。如果原始句子 fuzzy，property 也會 fuzzy。好的 SVA
@@ -106,7 +106,7 @@ assert property (@(posedge clk) disable iff (!rst_n)
 
 - RTL 說明硬體*如何*行為；assertion 說明*什麼必須為真*。
 - ABV 在整個設計中嵌入許多小檢查，由擁有意圖的設計者撰寫。
-- 一個 assertion 可在流程中服務於 simulation、formal與 emulator。
+- 一個 assertion 可在流程中服務於 simulation、 formal 與 emulator。
 - immediate assertion 檢查某一瞬間的條件；concurrent assertion 檢查帶 clock 時間上的行為。
 - assertion 在源頭失敗，縮減原因與症狀之間的距離。
 

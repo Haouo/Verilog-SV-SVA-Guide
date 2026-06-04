@@ -10,13 +10,13 @@
 
 ## 設計者 mental model
 
-請把這本 guide 當成三件設計工作之間的橋：描述 hardware structure、選擇 tool 能正確解讀的
-coding form、以及寫下 hardware 必須遵守的 promise。Verilog 與 SystemVerilog 處理前兩者；
-SVA 處理第三者。讀每個 construct 時，最重要的習慣是問：「我正在把哪個 hardware fact 明確化？」
+請把這本指南看成三件設計工作之間的橋：描述 hardware structure、選擇工具能正確解讀的
+coding form、以及寫下 hardware 必須遵守的 promise。Verilog 與 SystemVerilog 主要處理前兩者；
+SVA 則處理第三者。讀每個 construct 時，最重要的習慣是問：「我正在把哪個 hardware fact 明確化？」
 
-這些章節不是 language-lawyer 式的語法巡覽，而是從 RTL syntax 走到 design intent 的路徑。
-像 width rule 或 sampled-value rule 這種細節看似小，實際上都是未來 debug 的分界點：現在
-mental model 清楚，之後看 waveform 就會少很多猜測。
+這些章節不是 language-lawyer 式的語法巡覽，而是一條從 RTL syntax 走到 design intent 的路徑。
+像 width rule 或 sampled-value rule 這種細節看似很小，實際上都是未來 debug 的分界點：現在
+mental model 越清楚，之後看 waveform 時就越少靠猜。
 
 ## 本指南的讀者對象
 

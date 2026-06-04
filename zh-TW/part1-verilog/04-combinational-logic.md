@@ -11,13 +11,13 @@
 
 ## 設計者 mental model
 
-combinational logic 是 current input 到 current output 的 pure mapping，沒有 memory。如果
-procedural block 在某些 path 沒有 assign output，hardware 想保留舊值就只能產生 storage，
+combinational logic 是 current input 到 current output 的 pure mapping，不應該有 memory。如果
+procedural block 在某些 path 沒有 assign output，hardware 若要保留舊值就只能產生 storage，
 通常就是 unintended latch。所以 complete assignment 是本章最核心的習慣。
 
 review combinational RTL 時，先問兩個問題再逐行讀：哪些 signal 是 decision 的 input？每條
 path 是否 assign 每個 output？syntax 可以是 `assign`、`always @(*)`，或之後的 `always_comb`，
-但 hardware test 一樣：沒有 hidden state、沒有 missing sensitivity、沒有 case branch 意外依賴
+但檢查標準一樣：沒有 hidden state、沒有 missing sensitivity、沒有 case branch 意外依賴
 previous value。
 
 ## 組合邏輯的兩種寫法
@@ -51,7 +51,7 @@ end
 
 ## 敏感度列表
 
-`always @*`（等同於 `always @(*)`）告訴工具：當該區塊所讀取的*任何*訊號變化時，觸發此區塊。組合邏輯應一律使用它。舊式的手動列舉訊號方式——`always @(a or b or sel)`——容易出錯：遺漏一個訊號，simulation結果便不再與合成（synthesis）結果一致，因為合成工具無論如何都會建構組合邏輯，不受你的列表影響。
+`always @*`（等同於 `always @(*)`）告訴工具：當該區塊所讀取的*任何*訊號變化時，觸發此區塊。組合邏輯應一律使用它。舊式的手動列舉訊號方式——`always @(a or b or sel)`——容易出錯：遺漏一個訊號，simulation 結果便不再與合成（synthesis）結果一致，因為合成工具無論如何都會建構組合邏輯，不受你的列表影響。
 
 ```verilog
 // Good: complete sensitivity, by construction
@@ -116,7 +116,7 @@ end
 - `full_case` 宣稱所有可能的 `case` 值都已涵蓋。
 - `parallel_case` 宣稱各項目是互斥的。
 
-兩者都應避免。它們告訴合成工具假設某些simulator不假設的事，導致simulation與合成產生分歧——這正是斷言（assertion）存在所要捕捉的不一致。請改為撰寫帶有明確 `default` 的完整 `case`，讓工具看到真實情況。
+兩者都應避免。它們告訴合成工具假設某些 simulator 不假設的事，導致 simulation 與合成產生分歧——這正是斷言（assertion）存在所要捕捉的不一致。請改為撰寫帶有明確 `default` 的完整 `case`，讓工具看到真實情況。
 
 > **設計意圖。** 組合區塊的本意是成為輸入的純函數。
 > 閂鎖器透過引入隱藏狀態打破了這個意圖。
@@ -128,7 +128,7 @@ end
 - **指定不完整 → 推斷出閂鎖器。** 在每條路徑上指定每個輸出。
 - **手動撰寫敏感度列表。** 請使用 `always @*`。
 - **缺少 `case` 的 `default`。** 可能推斷出閂鎖器，並隱藏選擇器上的 `x`。
-- **`full_case`/`parallel_case` pragma。** 它們導致simulation/合成不一致。請改寫完整的 `case` 語句。
+- **`full_case`/`parallel_case` pragma。** 它們導致 simulation / synthesis 不一致。請改寫完整的 `case` 語句。
 - **`casex`。** 它將 `x` 視為 don't-care，可能隱藏真實錯誤；請使用 `casez`。
 
 ## 小結

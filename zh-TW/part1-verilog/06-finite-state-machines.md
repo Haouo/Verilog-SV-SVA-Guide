@@ -13,7 +13,7 @@
 
 FSM 是一個 named control contract。state register 說明 block 目前在哪個 phase；next-state
 logic 說明哪些 transition 合法；output logic 說明每個 phase 對 design 其他部分承諾什麼。把這些
-role 分開，machine 會更容易 debug，也更容易寫 assertion。
+role 分開，machine 會更容易 debug，也更容易補上 assertion。
 
 不要只把 FSM 讀成一堆 `case` branch；要把它讀成 graph：哪些 state 合法、哪些 edge 允許、
 什麼 event 造成移動、若 state 變 illegal 有沒有 recovery path。這個 graph 通常也是後續推導

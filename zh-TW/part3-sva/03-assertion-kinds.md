@@ -70,7 +70,7 @@ concurrent assertion 可出現於模組、介面、program 或 `checker` 中，�
 - **`assert`**——該 property*必須成立*。違反即為失敗。這是陳述設計意圖的預設方式。
 - **`assume`**——該 property*被視為已知*。在 simulation 中 `assume` 如同 `assert` 般被檢查；在 formal verification 中它約束環境，告訴工具哪些輸入是合法的。用它來建模設計對外部所期望的契約。
 - **`cover`**——不是檢查，而是*量測*。它記錄某行為是否確實發生，使你能確認某情境曾被執行。`cover` 永不失敗；它要嘛被命中，要嘛沒有。
-- **`restrict`**——類似 `assume`，但僅用於formal以*修剪*狀態空間（例如把某個組態輸入約束為單一值）。它在 simulation 中沒有作用。
+- **`restrict`**——類似 `assume`，但僅用於 formal 以*修剪*狀態空間（例如把某個組態輸入約束為單一值）。它在 simulation 中沒有作用。
 
 ```systemverilog
 // Intent we are checking
@@ -86,7 +86,7 @@ cover  property (@(posedge clk) full);
 restrict property (@(posedge clk) mode == STREAM);
 ```
 
-`assert` 與 `assume` 的區別對formal至關重要：assertion 是*要證明的義務*，假設是*你被允許使用的 antecedent*。
+`assert` 與 `assume` 的區別對 formal 至關重要：assertion 是*要證明的義務*，假設是*你被允許使用的 antecedent*。
 
 > **設計意圖。** 相同的 property 文字依關鍵字而陳述不同的意圖。`assert` 說「我的設計保證這一點」。
 > `assume` 說「環境向我承諾這一點」。`cover` 說「我想看到這件事至少發生一次」。
@@ -140,7 +140,7 @@ assert property (@(posedge clk) wr_ptr < DEPTH)
 
 - immediate assertion 檢查程序式程式碼中某一點的條件；deferred assertion 推遲回報以避免毛刺造成的誤報。
 - concurrent assertion 帶有 clock，以 `assert property` 隨時間推理。
-- 關鍵字設定角色：`assert`（必須成立）、`assume`（已知）、`cover`（量測）、`restrict`（formal修剪）。
+- 關鍵字設定角色：`assert`（必須成立）、`assume`（已知）、`cover`（量測）、`restrict`（formal 修剪）。
 - 動作區塊在 pass 或 fail 時執行；fail 分支回報違反。
 - 一般失敗用 `$error` 使執行繼續；保留 `$fatal` 給無法復原的情況。
 

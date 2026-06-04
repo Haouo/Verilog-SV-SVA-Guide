@@ -8,15 +8,15 @@
 - 應用 `++`、`--`、`+=`、`-=` 及其他簡寫指定運算子。
 - 使用 `case inside` 進行萬用字元樣式比對。
 - 以靜態型別轉換 `'` 和 `$cast` 正確轉換型別。
-- 了解哪些構造是可合成的，哪些僅用於simulation。
+- 了解哪些構造是可合成的，哪些僅用於 simulation。
 
 ## 設計者 mental model
 
 SystemVerilog procedural feature 的價值在於減少 accidental detail。inline loop variable、`foreach`、
 cast、shorthand assignment、`case inside` 都可能比舊 Verilog form 更清楚地表達 intended operation。
-最好的使用方式不只是 code 變短，而是 code structure 更貼近你要描述的 decision 或 data movement。
+好的使用方式不只是讓 code 變短，而是讓 code structure 更貼近你要描述的 decision 或 data movement。
 
-因為這些 construct 更 expressive，也更需要 deliberate review。要問：cast 是在 document 真正的
+因為這些 construct 更 expressive，也更需要 deliberate review。要問：cast 是在記錄真正的
 conversion，還是在壓掉 type warning？shorthand assignment 對這個 block 的 timing 安全嗎？
 `case inside` 是在表達真實 pattern，還是在藏住應該被 check 的 don't-care behavior？
 
@@ -184,7 +184,7 @@ s16 = 16'(signed'(u8));      // sign-extend 8-bit unsigned to 16-bit signed
 
 ### `$cast`
 
-`$cast` 是動態型別轉換，主要用於simulation和驗證。對於 enum 型別，它將來源指定給目標，若值是合法的 enum 成員則回傳 1，否則回傳 0。
+`$cast` 是動態型別轉換，主要用於 simulation 和驗證。對於 enum 型別，它將來源指定給目標，若值是合法的 enum 成員則回傳 1，否則回傳 0。
 
 ```systemverilog
 state_t next;
@@ -212,14 +212,14 @@ sum_s = $signed({1'b0, a}) + $signed({1'b0, b}); // treat as signed
 
 在合成中，有號和無號算術對應到相同的加法器；只有進位/溢位位元的解讀不同。表達式中有號性不一致是細微錯誤的常見來源——請明確標示。
 
-> **設計意圖。** 帶萬用字元樣式的 `case inside` 記錄了某些位元對決策確實不相關——這是硬體編碼決策，而非simulation上的便利。`unique` 修飾詞檢查其餘位元是否完整確定。兩者合在一起，表達了一個精確的、工具可驗證的解碼器規格。
+> **設計意圖。** 帶萬用字元樣式的 `case inside` 記錄了某些位元對決策確實不相關——這是硬體編碼決策，而非 simulation 上的便利。`unique` 修飾詞檢查其餘位元是否完整確定。兩者合在一起，表達了一個精確的、工具可驗證的解碼器規格。
 
 ## 常見陷阱
 
 - **使用 `break` 期望節省功耗或面積。** 在合成中，迴圈展開意味著所有迭代都作為組合邏輯執行。`break` 不會使硬體短路。它能讓意圖更清晰，可能幫助合成識別預期的結構，但請勿依賴它來減少面積。
 - **在帶時脈的區塊中應用 `++`。** 在 `always_ff` 中請使用 `count <= count + 1`，而非試圖用 `count++` 的非阻塞形式。明確的非阻塞指定是正確且可攜的形式。
-- **在可合成 RTL 中使用 `$cast`。** 它僅用於simulation。在設計程式碼中使用靜態型別轉換 `type'(value)`。
-- **在 `case inside` 中使用重疊樣式並加上 `unique`。** 若兩個樣式可能匹配相同的輸入，則違反了 `unique`，simulator會發出警告。在宣告 `unique` 之前，請檢查所有樣式的重疊情況。
+- **在可合成 RTL 中使用 `$cast`。** 它僅用於 simulation。在設計程式碼中使用靜態型別轉換 `type'(value)`。
+- **在 `case inside` 中使用重疊樣式並加上 `unique`。** 若兩個樣式可能匹配相同的輸入，則違反了 `unique`，simulator 會發出警告。在宣告 `unique` 之前，請檢查所有樣式的重疊情況。
 - **忽視比較中的有號性。** 將 `logic signed [7:0] a` 與 `logic [7:0] b`（無號）比較時，會套用無號比較規則。要進行正確的有號比較，兩個運算元必須是相同的有號性型別。
 
 ## 小結
