@@ -138,7 +138,7 @@ typedef logic [7:0] byte_t;   // visible to all modules in this compilation unit
 
 常見的模式是每個協定或子系統一個套件：
 
-```
+```text
 bus_pkg        — 匯流排型別與寬度
 config_pkg     — 頂層參數與衍生常數
 alu_pkg        — ALU 運算碼與控制型別

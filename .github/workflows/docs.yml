@@ -1,0 +1,24 @@
+name: Documentation Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  check-docs:
+    name: Check mirrored Markdown guide
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run documentation checker
+        run: python3 tools/check_docs.py

@@ -75,7 +75,7 @@
 
 ## 快速對照摘要
 
-```
+```text
 Verilog                    SystemVerilog 等效寫法
 ──────────────────────────────────────────────────
 wire / reg                 logic（或 wire logic）

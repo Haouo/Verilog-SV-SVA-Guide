@@ -76,7 +76,7 @@ changed and why it matters to a designer writing synthesizable RTL.
 
 ## Quick mapping summary
 
-```
+```text
 Verilog              SystemVerilog equivalent
 ───────────────────────────────────────────────
 wire / reg           logic  (or wire logic)

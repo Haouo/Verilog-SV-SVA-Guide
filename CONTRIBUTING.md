@@ -29,6 +29,7 @@ Every chapter follows the same shape:
 ## Code blocks
 
 - Fence Verilog with ` ```verilog ` and SystemVerilog with ` ```systemverilog `.
+- Fence non-code alignment tables or mapping summaries with ` ```text `.
 - Comments inside code stay in English in both editions.
 - Keep snippets minimal: show the point, omit boilerplate unless it matters.
 
@@ -39,6 +40,18 @@ Every chapter follows the same shape:
 - Keep each file focused and under ~800 lines. Split a topic before it grows
   past that.
 - Use **relative Markdown links** only. No external build tooling.
+- Track editorial state in [docs/CONTENT_STATUS.md](docs/CONTENT_STATUS.md).
+
+## Local checks
+
+Run the repository-local documentation checker before committing:
+
+```text
+python3 tools/check_docs.py
+```
+
+It checks mirrored bilingual files, relative Markdown links, code fence labels,
+heading shape, and required design-intent callouts.
 
 ## Cross-references
 

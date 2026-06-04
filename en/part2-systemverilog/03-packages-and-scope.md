@@ -169,7 +169,7 @@ and compilation strategies.
 
 A common pattern is one package per protocol or subsystem:
 
-```
+```text
 bus_pkg        — bus types and widths
 config_pkg     — top-level parameters and derived constants
 alu_pkg        — ALU opcodes and control types

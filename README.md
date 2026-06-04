@@ -44,8 +44,10 @@ concepts → snippets → a **design-intent callout** → common pitfalls → su
 
 - Shared bilingual terminology: [GLOSSARY.md](GLOSSARY.md)
 - Authoring conventions (for contributors): [CONTRIBUTING.md](CONTRIBUTING.md)
+- Editorial status and review checklist: [docs/CONTENT_STATUS.md](docs/CONTENT_STATUS.md)
 
 ## License / status
 
 Educational material in progress. Reference standards and books used while
-authoring are listed in each language's `appendices/D-references.md`.
+authoring are listed in each language's `appendices/D-references.md`. Current
+chapter status is tracked in [docs/CONTENT_STATUS.md](docs/CONTENT_STATUS.md).
