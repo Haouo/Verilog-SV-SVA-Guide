@@ -58,13 +58,13 @@ There are two forms:
 always_comb
     assert #0 (a == b);
 
-// Final-deferred: report in the Final region (end of simulation step set)
+// Final-deferred: report in the Reactive region, after #0 deferred checks
 always_comb
     assert final (a == b);
 ```
 
 `assert #0` defers the report to the Observed region of the same step;
-`assert final` defers it further. Both suppress reports caused by intermediate
+`assert final` defers it further, to the Reactive region. Both suppress reports caused by intermediate
 glitches, which makes deferred assertions the preferred form for checking
 combinational invariants without false alarms from transient values.
 

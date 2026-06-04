@@ -41,7 +41,7 @@ The SystemVerilog design subset, based on IEEE 1800-2023.
 2. [Enhanced Data Types](part2-systemverilog/02-enhanced-data-types.md)
 3. [Packages and Scope](part2-systemverilog/03-packages-and-scope.md)
 4. [Interfaces and Modports](part2-systemverilog/04-interfaces-and-modports.md)
-5. [Procedural Blocks and Operators](part2-systemverilog/05-procedural-and-operators.md)
+5. [Procedural Constructs and Operators](part2-systemverilog/05-procedural-and-operators.md)
 6. [Parameterization and Generate](part2-systemverilog/06-parameterization-and-generate.md)
 7. [Verification Features Overview (mention only)](part2-systemverilog/07-verification-features-overview.md)
 

@@ -9,21 +9,21 @@
 - 建立階層，並理解它如何闡述（elaborate）。
 - 傳遞參數讓模組可重複使用。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-`module` 不只是文字容器，而是 design 用來命名一塊 hardware、宣告 boundary 上有哪些 signal、
-並讓 elaboration 建出 instance hierarchy 的單位。讀一個 module 時，先把 port list 和
-parameter 視為 contract，再往下看 implementation。
+`module` 不只是一個文字容器，更是設計用來命名一塊硬體、宣告邊界上有哪些訊號，並讓
+elaboration 據以建出實例階層的單位。讀一個 module 時，先把它的 port list 和 parameter
+當成一份契約來看，再往下細看底下的實作。
 
-好的 hierarchy 會降低一次需要理解的 context。caller 不應該需要知道 child block 裡每個
-internal register；它應該只需要理解 ports、parameter 的意義，以及 timing expectation。
-所以本章不只講 `module ... endmodule` syntax，也會說明 naming、instantiation 和
-parameterization，因為這些共同決定 design boundary 是否清楚。
+良好的階層能減少你一次要掌握的脈絡。呼叫端不需要知道子區塊內部的每一個暫存器，只需要
+知道它的 port、各個 parameter 的意義，以及時序上的預期。正因如此，本章不只談
+`module ... endmodule` 語法，還會著墨命名、實例化與參數化，因為這幾件事共同決定了設計
+邊界是否清楚。
 
 ## 模組是設計的基本單位
 
 `module` 是 Verilog 的基本建構單元。它有名稱、一份埠列表，以及描述行為或結構的主體。
-硬體是透過在模組中實例化其他模組來建構，形成一棵樹。頂層模組是樹根，葉節點則是基本邏輯。
+硬體靠的是在模組中實例化其他模組，逐層疊成一棵樹。頂層模組是樹根，葉節點則是基本邏輯。
 
 ```verilog
 module adder (
@@ -70,8 +70,8 @@ module datapath (
 endmodule
 ```
 
-位置連接——`adder u_adder (x, y, total)`——雖可運作但脆弱。只要有一個埠重新排序或插入，
-就會悄悄接錯線。具名連接是正式 RTL 的準則。
+位置連接，也就是 `adder u_adder (x, y, total)` 這種寫法，雖可運作但脆弱：只要有一個埠
+重新排序或插入，就會悄悄接錯線。具名連接是正式 RTL 的準則。
 
 ## 階層與闡述
 
@@ -79,8 +79,8 @@ endmodule
 實例，依此類推，直到整棵樹建構完成。參數會在這個步驟解析，發生在 simulation 或合成開始之前。
 結果是一個完全展開、由具體模組構成的階層。
 
-某模組內的訊號，除非透過埠，否則在其他模組中不可見。這是刻意的設計。埠是模組與其
-父模組之間的契約；讓契約保持明確，正是使設計可組合的關鍵。
+某模組內的訊號，除非經由埠，否則在其他模組中看不到。這是刻意的設計。埠是模組與其
+父模組之間的契約，讓這份契約保持明確，正是使設計可組合的關鍵。
 
 ## 參數讓模組可重複使用
 
@@ -89,7 +89,7 @@ endmodule
 
 ```verilog
 module adder #(
-    parameter int WIDTH = 8
+    parameter WIDTH = 8
 ) (
     input  wire [WIDTH-1:0] a,
     input  wire [WIDTH-1:0] b,

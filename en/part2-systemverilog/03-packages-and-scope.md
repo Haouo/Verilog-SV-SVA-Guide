@@ -142,10 +142,10 @@ endpackage
 Any module that needs `FIFO_DEPTH` imports `config_pkg` and uses the name
 directly. A single change to the package propagates everywhere on recompilation.
 
-Note that `localparam` in a package cannot be overridden by a parent — it is a
-computed constant. `parameter` in a package can in principle be overridden by a
-parameterized package instantiation, but this feature is rarely used in practice.
-For shared constants that should never be overridden, `localparam` is safer.
+Note that package constants cannot be overridden the way module parameters can —
+packages are not instantiated, so a `parameter` declared in a package is
+effectively a fixed constant. Prefer `localparam` to make the never-overridable
+intent explicit.
 
 ## `$unit` scope
 
@@ -223,9 +223,9 @@ specific module.
   to resolve the conflict.
 - **Putting `always` blocks or module instances in a package.** Packages hold
   declarations only. Hardware behavior belongs in modules.
-- **`parameter` vs `localparam` in a package.** Use `localparam` for constants
-  that should not be overridden. Use `parameter` only if you intend to support
-  parameterized package instantiation.
+- **`parameter` vs `localparam` in a package.** Both behave as fixed constants
+  in a package — packages are not instantiated. Prefer `localparam` to state the
+  never-overridable intent.
 
 ## Summary
 

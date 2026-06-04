@@ -2,23 +2,19 @@
 
 [← Verilog 與 SystemVerilog 對照](A-verilog-vs-sv.md) · [目錄](../README.md) · [下一篇：詞彙表 →](C-glossary.md)
 
-本速查表是第三部所涵蓋 SVA 語法的密集參考卡。每一節均連結至深入說明該語法的章節。
+本速查表是第三部所涵蓋 SVA 語法的密集參考卡。每一節都連結到深入說明該語法的章節。
 
-## 如何使用這個 appendix
+## 如何使用本附錄
 
-請在已經理解 construct 背後 intent 之後，再使用這份 cheat-sheet。它是為 recall 設計的，不是
-初學入口。如果某一列讓你覺得意外，先沿著 chapter link 回去重建 timing model，再把 syntax
-用在 real RTL 或 formal environment。
+請在已經理解某個語法背後的設計意圖之後，再來查這份速查表。它是為了喚起記憶而設計的，不是初學的入口。如果某一列讓你覺得意外，先沿著章節連結回去重建 timing model，再把該語法用在實際的 RTL 或 formal environment 上。
 
-最安全的 workflow 是 sentence first, operator second：先用文字 state protocol rule，再選 sampled
-fact 或 sequence shape，最後用這個 appendix 確認寫法。SVA syntax 很 compact；先寫清楚 design sentence，
-可以避免 syntax 看似正確、意圖卻已經偏掉。
+最安全的工作流程是「先寫句子，再選運算子」：先用文字把 protocol 規則說清楚，接著選出要用的 sampled value 或 sequence 形狀，最後才用本附錄確認確切寫法。SVA 語法很精簡，先寫清楚這句設計敘述，才能避免語法看似正確、意圖卻已經偏掉。
 
 ---
 
 ## sampled value 函式
 
-用於 concurrent assertion 內部。所有值均取自 assertion clock 的 **Preponed** 區。
+用在 concurrent assertion 內部。所有值都取自 assertion clock 的 **Preponed** 區。
 → [第三部 · 第 4 章](../part3-sva/04-boolean-layer.md)
 
 | 函式 | 含義 | 簡短範例 |
@@ -27,8 +23,8 @@ fact 或 sequence shape，最後用這個 appendix 確認寫法。SVA syntax 很
 | `$fell(e)` | 本週期 `e` 的 LSB 從 1 變為 0 | `$fell(ack)` — ack 剛被拉低 |
 | `$stable(e)` | `e` 與前一週期相比未改變 | `busy \|-> $stable(cfg)` |
 | `$changed(e)` | `e` 與前一週期不同（`$stable` 的否定） | `!$changed(addr)` |
-| `$past(e)` | `e` 一個週期前的 sampled value | `q == $past(d)` |
-| `$past(e, n)` | `e` 恰好 `n` 個週期前的 sampled value | `out == $past(in, 3)` |
+| `$past(e)` | `e` 在前一個週期的 sampled value | `q == $past(d)` |
+| `$past(e, n)` | `e` 在恰好 `n` 個週期前的 sampled value | `out == $past(in, 3)` |
 | `$onehot(e)` | `e` 恰好有一個位元為 1 | `$onehot(state)` |
 | `$onehot0(e)` | `e` 最多有一個位元為 1 | `$onehot0(grant)` |
 | `$countones(e)` | `e` 中為 1 的位元數量 | `$countones(active) == 2` |
@@ -38,17 +34,17 @@ fact 或 sequence shape，最後用這個 appendix 確認寫法。SVA syntax 很
 
 ## sequence operator
 
-sequence 描述跨越 clock 週期的事件樣式。
+sequence 描述橫跨多個 clock 週期的事件樣式。
 → [第三部 · 第 5 章](../part3-sva/05-sequences-basics.md)、[第 6 章](../part3-sva/06-sequence-operations.md)
 
 ### 延遲運算子
 
 | 語法 | 含義 | 範例 |
 |---|---|---|
-| `s1 ##n s2` | `s1` 之後恰好 `n` 個週期 `s2` | `req ##1 gnt` |
-| `s1 ##[m:n] s2` | `s1` 之後 `m` 至 `n` 個週期 `s2` | `req ##[1:4] gnt` |
-| `s1 ##[*] s2` | `s1` 之後 0 個或更多週期 `s2`（等同 `##[0:$]`） | `start ##[*] done` |
-| `s1 ##[+] s2` | `s1` 之後 1 個或更多週期 `s2`（等同 `##[1:$]`） | `req ##[+] ack` |
+| `s1 ##n s2` | `s1` 之後恰好過 `n` 個週期出現 `s2` | `req ##1 gnt` |
+| `s1 ##[m:n] s2` | `s1` 之後過 `m` 到 `n` 個週期出現 `s2` | `req ##[1:4] gnt` |
+| `s1 ##[*] s2` | `s1` 之後過 0 個或更多週期出現 `s2`（等同 `##[0:$]`） | `start ##[*] done` |
+| `s1 ##[+] s2` | `s1` 之後過 1 個或更多週期出現 `s2`（等同 `##[1:$]`） | `req ##[+] ack` |
 
 ### 重複運算子
 
@@ -65,26 +61,26 @@ sequence 描述跨越 clock 週期的事件樣式。
 
 | 語法 | 含義 | 範例 |
 |---|---|---|
-| `s1 and s2` | 兩個 sequence 從同一點開始，且都必須完成 | `req_a and req_b` |
-| `s1 or s2` | 任一 sequence 成立 | `(a ##1 b) or (c ##2 d)` |
-| `s1 intersect s2` | 兩個 sequence 都成立且在同一個週期結束 | `s1 intersect s2` |
-| `e throughout s` | 在 `s` 的每個週期 `e` 均為真 | `valid throughout (a ##1 b)` |
-| `s1 within s2` | `s1` 被包含（匹配）於 `s2` 之內 | `pulse within window` |
-| `first_match(s)` | 只取 `s` 的最早一次匹配 | `first_match(a ##[1:5] b)` |
+| `s1 and s2` | 兩個 sequence 從同一點起算，且都必須完成 | `req_a and req_b` |
+| `s1 or s2` | 任一個 sequence 成立即可 | `(a ##1 b) or (c ##2 d)` |
+| `s1 intersect s2` | 兩個 sequence 都成立，且在同一個週期結束 | `s1 intersect s2` |
+| `e throughout s` | `s` 橫跨的每個週期 `e` 都為真 | `valid throughout (a ##1 b)` |
+| `s1 within s2` | `s1` 整段都落在 `s2` 之內 | `pulse within window` |
+| `first_match(s)` | 只取 `s` 最早的那一次匹配 | `first_match(a ##[1:5] b)` |
 
 ---
 
 ## property operator
 
-property 將 sequence 組合成可檢查的時序陳述。
+property 把 sequence 組合成可檢查的時序陳述。
 → [第三部 · 第 7 章](../part3-sva/07-properties.md)
 
 ### implication
 
 | 語法 | 含義 | 備註 |
 |---|---|---|
-| `s \|-> p` | overlapping implication：`s` 在本週期匹配，即於本週期開始檢查 `p` | 共用端點 |
-| `s \|=> p` | 非 overlapping implication：`s` 匹配後，於下一個週期開始檢查 `p` | `\|=>` ≡ `\|-> ##1` |
+| `s \|-> p` | overlapping implication：`s` 在本週期結束處匹配，就從本週期開始檢查 `p` | 共用同一個端點 |
+| `s \|=> p` | non-overlapping implication：`s` 匹配後，從下一個週期開始檢查 `p` | `\|=>` ≡ `\|-> ##1` |
 
 ### 布林與時序連接詞
 
@@ -92,21 +88,21 @@ property 將 sequence 組合成可檢查的時序陳述。
 |---|---|---|
 | `not p` | property `p` 的否定 | `not ($rose(err))` |
 | `p and q` | 兩個 property 都必須成立 | `p1 and p2` |
-| `p or q` | 至少一個成立 | `p1 or p2` |
-| `if (e) p` | 若 `e` 成立則 `p` 必須成立（否則 vacuous pass） | `if (mode) p` |
-| `if (e) p else q` | `e` 時檢查 `p`；否則檢查 `q` | |
-| `nexttime p` | `p` 必須從下一個週期開始成立 | `nexttime (q == 0)` |
-| `nexttime [n] p` | `p` 必須從 `n` 個週期後開始成立 | `nexttime [3] p` |
-| `s_nexttime p` | 強式：必須到達終點 | |
-| `always p` | `p` 在每個未來時間點均成立 | `always $onehot(state)` |
-| `s_always [m:n] p` | 在有限窗口內的強式 always | |
-| `eventually p` | `p` 在某個未來時間點成立（liveness property） | `eventually done` |
-| `s_eventually p` | 強式 eventually — 保證到達終點 | |
-| `p until q` | `p` 成立直到 `q` 成立（弱式 — `q` 不一定發生） | `busy until idle` |
-| `p s_until q` | 強式 until — `q` 最終必須發生 | `busy s_until idle` |
-| `p until_with q` | `p` 成立直到且包含 `q` 首次成立的那個週期 | |
-| `p implies q` | 若 `p` 在此時間點成立，`q` 也必須成立 | |
-| `p iff q` | 雙向 implication | |
+| `p or q` | 至少一個成立即可 | `p1 or p2` |
+| `if (e) p` | `e` 成立時 `p` 必須成立（不成立則 vacuous pass） | `if (mode) p` |
+| `if (e) p else q` | `e` 成立時檢查 `p`，否則檢查 `q` | |
+| `nexttime p` | `p` 必須從下一個週期起成立 | `nexttime (q == 0)` |
+| `nexttime [n] p` | `p` 必須從 `n` 個週期後起成立 | `nexttime [3] p` |
+| `s_nexttime p` | 強式：終點一定要到達 | |
+| `always p` | `p` 在未來每個時間點都成立 | `always $onehot(state)` |
+| `s_always [m:n] p` | 限定有限窗口的強式 always | |
+| `eventually [m:n] p` | `p` 在窗口內某處成立（弱式一定要有界） | `eventually [1:8] done` |
+| `s_eventually p` | 強式 eventually：`p` 最終一定要成立（可以無界） | |
+| `p until q` | `p` 一直成立到 `q` 成立為止（弱式：`q` 不一定會發生） | `busy until idle` |
+| `p s_until q` | 強式 until：`q` 最終一定要發生 | `busy s_until idle` |
+| `p until_with q` | `p` 一直成立到 `q` 首次成立的那個週期，且包含該週期 | |
+| `p implies q` | `p` 在此時間點成立時，`q` 也必須成立 | |
+| `p iff q` | 雙向蘊涵 | |
 
 ---
 
@@ -116,14 +112,14 @@ property 將 sequence 組合成可檢查的時序陳述。
 
 ### concurrent assertion 陳述
 
-每個 clock 節拍都進行評估；結果由 simulator 或 formal tool 回報。
+每個 clock 節拍都會評估一次，結果由 simulator 或 formal tool 回報。
 
 | 陳述 | 用途 | 典型放置位置 |
 |---|---|---|
-| `assert property (p)` | 驗證 `p` 成立；失敗視為錯誤 | RTL 模組、checker、bind |
-| `assume property (p)` | 限制輸入；formal tool 視為公理 | formal environment |
+| `assert property (p)` | 驗證 `p` 成立，失敗即視為錯誤 | RTL 模組、checker、bind |
+| `assume property (p)` | 約束輸入，formal tool 將其視為公理 | formal environment |
 | `cover property (p)` | 記錄 `p` 至少被觀察到一次 | RTL 模組、checker |
-| `restrict property (p)` | 僅供 formal tool：硬性約束（simulation 無效果） | formal environment |
+| `restrict property (p)` | 只給 formal tool 用的硬性約束（在 simulation 下無作用） | formal environment |
 
 語法樣式：
 ```systemverilog
@@ -133,13 +129,13 @@ label: assert property (@(posedge clk) disable iff (!rst_n) antecedent |-> conse
 
 ### immediate assertion 陳述
 
-程序式；在執行到達時立即評估，如同一般陳述。
+屬於程序式語法，執行流程一到就立即評估，和一般陳述一樣。
 
 | 陳述 | 時序區 | 用途 |
 |---|---|---|
-| `assert (expr)` | Observed 區 | 在 `always`、`initial`、task 內部 |
-| `assert final (expr)` | Final 區 | 時間步結束時的檢查 |
-| `assert #0 (expr)` | Postponed 區 | deferred assertion：避免讀取瞬變值 |
+| `assert (expr)` | Active 區（行內，執行流程一到就評估） | 用在 `always`、`initial`、task 內部 |
+| `assert final (expr)` | Reactive 區 | 在 time step 結束時檢查 |
+| `assert #0 (expr)` | Observed 區 | deferred assertion：避免讀到瞬變值 |
 
 ---
 
@@ -149,10 +145,10 @@ label: assert property (@(posedge clk) disable iff (!rst_n) antecedent |-> conse
 
 | 語法 | 含義 | 範例 |
 |---|---|---|
-| `@(posedge clk)` 內嵌 | 單一 assertion 的 clock | `assert property (@(posedge clk) p)` |
-| `default clocking cb @(posedge clk); endclocking` | 模組範圍的預設 clock | 每個 assertion 可省略 clock 宣告 |
-| `disable iff (expr)` | 當 `expr` 為真時（通常為 reset 期間）抑制 assertion | `disable iff (!rst_n)` |
-| `$inferred_clock` | 從上下文推斷的 clock（在 `always_ff` 或 clocking block 內） | 鮮少明確撰寫 |
+| `@(posedge clk)` 內嵌 | 替單一 assertion 指定 clock | `assert property (@(posedge clk) p)` |
+| `default clocking cb @(posedge clk); endclocking` | 整個模組共用的預設 clock | 每個 assertion 都可省略 clock 宣告 |
+| `disable iff (expr)` | `expr` 為真時（通常是 reset 期間）抑制 assertion | `disable iff (!rst_n)` |
+| `$inferred_clock` | 從 assertion 所在的上下文推斷 clock（例如 `default clocking` 或外圍的程序區塊） | 很少明確寫出 |
 
 ---
 
@@ -167,7 +163,7 @@ bind target_module assertion_module inst_name (
 );
 ```
 
-將 assertion module 附加至 `target_module`，無需修改其原始碼。
+把 assertion module 掛到 `target_module` 上，不必改動它的原始碼。
 
 ---
 

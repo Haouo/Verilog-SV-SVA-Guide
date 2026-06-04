@@ -24,6 +24,7 @@ stay consistent. Add a term here before using a new translation in a chapter.
 | non-blocking assignment | 非阻塞式指定 | `<=` in procedural code. |
 | sensitivity list | 敏感度列表 | Signals that trigger an `always` block. |
 | finite state machine (FSM) | 有限狀態機 | Control logic modeled as states + transitions. |
+| pipeline | 管線 | Staged datapath; one result per clock after fill. |
 | testbench | 測試平台 | Non-synthesizable code that stimulates a design. |
 | assertion | 斷言 | A checkable statement of intended behavior. |
 | immediate assertion | 即時斷言 | Procedural, evaluated like a statement. |
@@ -32,7 +33,7 @@ stay consistent. Add a term here before using a new translation in a chapter.
 | property | 性質 | A temporal statement that can hold or fail. |
 | sequence | 序列 | A description of events over clock cycles. |
 | implication | 蘊涵 | `\|->` / `\|=>` antecedent-then-consequent. |
-| antecedent | 前提 | Left side of an implication. |
+| antecedent | 前件 | Left side of an implication. |
 | consequent | 後件 | Right side of an implication. |
 | sampled value | 取樣值 | Signal value in the Preponed region. |
 | clocking block | 時脈區塊 | Groups signals under a clock for sampling/driving. |

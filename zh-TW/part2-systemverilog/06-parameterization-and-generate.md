@@ -9,19 +9,15 @@
 - 以 `for`、`if` 和具名範圍撰寫 `generate` 區塊。
 - 構建參數化、可重用的設計模組。
 
-## 設計者 mental model
+## 設計者的心智模型
 
-parameterization 把 design choice 移到 elaboration time。parameterized module 是一個 hardware
-family 的 template；`generate` 在 simulation 或 synthesis 開始前選擇或複製 structure。把 parameter
-當成 module contract 的一部分：caller 選擇 legal value，module 再推導 internal width 和 instance。
+參數化把設計上的選擇移到闡述（elaboration）階段決定。參數化模組是某一族硬體的範本，`generate` 則在 simulation 或合成開始前，先選定或複製出結構。可以把參數看成模組合約的一部分：呼叫者挑選合法的值，模組再據此推導內部的位元寬與例化。
 
-危險在於 flexible module 可能變成 under-specified。每個 parameter 都應該有 meaning、range、
-consequence。derived `localparam` 很重要，因為它把 caller choice 轉成穩定的 internal fact，讓
-implementation 更容易讀，也更不容易誤用。
+風險在於，過度彈性的模組可能變得規格不足。每個參數都應該有明確的意義、範圍與後果。衍生的 `localparam` 很重要，因為它把呼叫者的選擇轉成穩定的內部事實，讓實作更好讀，也更不容易誤用。
 
 ## 帶型別的參數
 
-在 Verilog 中，參數是無型別的整數。SystemVerilog 允許參數攜帶明確的型別，從而改善錯誤檢查並記錄設計意圖。
+在 Verilog 中，參數是無型別的整數。SystemVerilog 允許參數帶有明確的型別，藉此強化錯誤檢查，也記錄了設計意圖。
 
 ```systemverilog
 module fifo #(
@@ -38,11 +34,11 @@ module fifo #(
 );
 ```
 
-將參數型別指定為 `int` 意味著工具會檢查覆寫值是否為相容的整數。型別指定為 `bit` 則記錄了它是布林標誌。帶型別的參數能在闡述（elaboration）時就捕獲 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，而非在 simulation 時才發現。
+把參數型別定為 `int`，工具就會檢查覆寫的值是否為相容的整數；定為 `bit` 則記錄了它是個布林標誌。帶型別的參數能在闡述（elaboration）時就抓到 `DEPTH = -1` 或 `FALL_THRU = 5` 這類覆寫錯誤，不必等到 simulation 才發現。
 
 ### `localparam`
 
-`localparam` 是不能在例化時被覆寫的參數。用它表示從其他參數衍生出的常數：
+`localparam` 是例化時不能被覆寫的參數。用它來表示由其他參數衍生出的常數：
 
 ```systemverilog
 module fifo #(
@@ -56,13 +52,13 @@ module fifo #(
 endmodule
 ```
 
-`localparam` 值出現在展開的階層中，但不能被父模組更改。只對呼叫者應能覆寫的值使用 `parameter`。
+`localparam` 的值會出現在展開後的階層中，但父模組無法更動。只有呼叫者該能覆寫的值，才用 `parameter`。
 
 ## 用於參數的系統函式
 
 ### `$bits`
 
-`$bits(expression)` 回傳一個表達式或型別的總位元數。它在闡述時求值。
+`$bits(expression)` 回傳一個運算式或型別的總位元數，於闡述時求值。
 
 ```systemverilog
 typedef struct packed {
@@ -75,11 +71,11 @@ typedef struct packed {
 localparam int REQ_BITS = $bits(req_t);   // 53
 ```
 
-當下游模組必須知道一個 struct 或陣列的寬度而無需手動計算欄位時，`$bits` 是不可或缺的。
+當下游模組需要知道某個 struct 或陣列的寬度，又不想手動數欄位時，`$bits` 不可或缺。
 
 ### `$clog2`
 
-`$clog2(n)` 回傳 n 以 2 為底的對數的上取整。它是計算深度為 `n` 的記憶體所需位址位元數的標準方法。
+`$clog2(n)` 回傳 n 以 2 為底取對數後的上取整值，是計算深度為 `n` 的記憶體所需位址位元數的標準做法。
 
 ```systemverilog
 parameter int DEPTH = 1024;
@@ -88,15 +84,15 @@ localparam int ADDR_W = $clog2(DEPTH);   // 10
 logic [ADDR_W-1:0] rd_addr, wr_addr;
 ```
 
-`$clog2(1)` 回傳 0。對於非 2 的冪次的深度，`$clog2` 給出定址所有條目所需的最少位元數。
+`$clog2(1)` 回傳 0。深度不是 2 的冪次時，`$clog2` 會給出定址所有條目所需的最少位元數。
 
 ## `generate` 區塊
 
-`generate` 區塊允許在闡述時進行結構性條件判斷和迴圈。它建立硬體結構，而非執行時行為。`generate` 區塊內的所有內容在 simulation 或合成開始之前就已確定。
+`generate` 區塊讓你在闡述時做結構上的條件判斷與迴圈。它建立的是硬體結構，不是執行時的行為。`generate` 區塊裡的一切，都在 simulation 或合成開始前就已定案。
 
 ### `generate for` — 複製結構
 
-`genvar` 是一個闡述時的整數，用作 generate for 迴圈的迴圈變數。它不作為硬體訊號存在。
+`genvar` 是闡述時的整數，當作 generate for 迴圈的迴圈變數使用。它不會以硬體訊號的形式存在。
 
 ```systemverilog
 module parity_tree #(
@@ -122,9 +118,9 @@ module parity_tree #(
 endmodule
 ```
 
-`begin : gen_xor` 標籤為 generate 範圍命名。具名範圍允許從外部以階層性引用的方式存取其中的項目：測試平台可存取 `gen_xor[3].parity_stage`。標籤是可選的，但建議使用以提升可讀性和可除錯性。
+`begin : gen_xor` 這個標籤為 generate 範圍命名。具名範圍讓外部可以用階層引用的方式存取裡頭的項目：測試平台便能存取 `gen_xor[3].parity_stage`。標籤可加可不加，但為了可讀性與可除錯性，建議加上。
 
-更常見的模式是例化複製的模組：
+更常見的做法是例化複製出來的模組：
 
 ```systemverilog
 module replicated_adder #(
@@ -145,11 +141,11 @@ module replicated_adder #(
 endmodule
 ```
 
-四個加法器被展開，每個通道一個。參數 `LANES` 控制數量。需要 8 個通道的父模組覆寫 `LANES = 8` 即可得到 8 個加法器，無需修改模組。
+這裡展開出四個加法器，每個通道一個，數量由參數 `LANES` 控制。需要 8 個通道的父模組，只要把 `LANES` 覆寫成 8，就能得到 8 個加法器，不必改動模組。
 
 ### `generate if` — 條件性結構
 
-`generate if` 在闡述時在兩種備選硬體結構之間選擇。它是闡述時的條件判斷，而非執行時的 `if`。
+`generate if` 在闡述時於兩種備選硬體結構之間做選擇。它是闡述時的條件判斷，不是執行時的 `if`。
 
 ```systemverilog
 module registered_adder #(
@@ -173,11 +169,11 @@ module registered_adder #(
 endmodule
 ```
 
-當 `PIPELINED = 1'b1` 時，工具展開 `gen_pipe` 分支並捨棄 `gen_comb`。當 `PIPELINED = 1'b0` 時，反之。產生的硬體完全不同，但模組介面保持不變。
+當 `PIPELINED = 1'b1` 時，工具展開 `gen_pipe` 分支，捨棄 `gen_comb`；`PIPELINED = 1'b0` 時則相反。產生的硬體截然不同，但模組介面維持一致。
 
 ### 省略 `generate` 關鍵字
 
-在 SystemVerilog 中，`generate` / `endgenerate` 關鍵字是可選的。直接出現在模組本體中、帶有 `genvar` 的 `for` 迴圈或 `if` 仍然是 generate 構造。省略關鍵字是合法的，在現代程式碼中也很常見：
+在 SystemVerilog 中，`generate` / `endgenerate` 關鍵字可加可不加。直接寫在模組本體裡、帶有 `genvar` 的 `for` 迴圈或 `if`，仍然是 generate 構件。省略關鍵字是合法的，在現代程式碼中也很常見：
 
 ```systemverilog
 module gray_encoder #(parameter int N = 4) (
@@ -193,7 +189,7 @@ module gray_encoder #(parameter int N = 4) (
 endmodule
 ```
 
-兩種風格——帶或不帶 `generate` / `endgenerate`——都是正確的。在一個專案中選擇一種並保持一致。
+兩種寫法都正確：帶或不帶 `generate` / `endgenerate` 皆可。在同一個專案裡選定一種，並保持一致。
 
 ## 完整的參數化範例
 
@@ -229,25 +225,25 @@ module sync_ram
 endmodule
 ```
 
-此模組適用於任何 2 的冪次深度和任何寬度。位址寬度由 `$clog2` 自動計算。參數來自套件以保持全專案一致性。
+這個模組適用於任何 2 的冪次深度與任何寬度，位址寬度由 `$clog2` 自動算出。參數取自套件，以維持全專案一致。
 
-> **設計意圖。** 參數化模組是可重用的規格，而非特定的硬體。參數列表是合約：呼叫者宣告其需求，模組進行適配。`localparam` 衍生值是承諾：「給定你的 `DEPTH`，我將計算正確的位址寬度」——工具在闡述時驗證這個算術。
+> **設計意圖。** 參數化模組是一份可重用的規格，而不是某一塊特定的硬體。參數列表就是合約：呼叫者宣告自己的需求，模組隨之適配。`localparam` 衍生值則是一種承諾，等於在說「給我你的 `DEPTH`，我就算出正確的位址寬度」，而這段算術由工具在闡述時驗證。
 
 ## 常見陷阱
 
-- **將 `genvar` 用作執行時訊號。** `genvar` 只存在於闡述時。它不能在 generate 迴圈標頭之外的 `always` 區塊或 `assign` 敘述中使用。在程序性程式碼中請使用普通的 `int`。
-- **在多敘述的 generate 本體上忘記 `begin : label`。** 若沒有 `begin / end`，只有第一個敘述在 generate 迴圈中。這和程序性程式碼中 `if` 和 `for` 的規則相同——即使只有一個敘述，在 generate 中也要加上區塊，使範圍可見。
-- **對執行時條件使用 `generate if`。** 條件必須是在闡述時可求值的常數表達式。依賴執行時訊號的條件不是 generate 條件；應在 `always` 區塊中撰寫執行時的 `if`。
-- **`$clog2(0)` 未定義。** 若 `DEPTH` 可能為 0，請透過斷言或參數約束確保 `DEPTH >= 1`。
-- **參數型別不符。** 將負值或實數傳遞給 `int` 參數，只有在參數帶型別時才能被捕獲。若省略型別，工具可能悄悄截斷或強制轉換值。
+- **把 `genvar` 當執行時訊號用。** `genvar` 只在闡述時存在。除了 generate 迴圈標頭，它不能用在 `always` 區塊或 `assign` 敘述裡。程序性程式碼請改用普通的 `int`。
+- **多敘述的 generate 本體忘了加 `begin : label`。** 少了 `begin / end`，只有第一個敘述會落在 generate 迴圈裡。這和程序性程式碼中 `if`、`for` 的規則一樣：即使只有一個敘述，generate 裡也要加上區塊，好讓範圍清楚可見。
+- **對執行時條件用 `generate if`。** 條件必須是闡述時可求值的常數運算式。會隨執行時訊號變動的條件並不是 generate 條件；那種情況請在 `always` 區塊裡寫執行時的 `if`。
+- **`$clog2(0)` 沒有定義。** 若 `DEPTH` 有可能為 0，請用斷言或參數約束確保 `DEPTH >= 1`。
+- **參數型別不符。** 把負值或實數傳給 `int` 參數，只有在參數帶型別時才抓得到。若省略型別，工具可能默默把值截斷或強制轉換。
 
 ## 小結
 
-- 帶型別的 `parameter` 值記錄意圖並啟用闡述時的檢查。
-- `localparam` 表達呼叫者無法覆寫的衍生常數。
-- `$bits` 在闡述時測量任何型別的大小；`$clog2` 計算給定深度的最小位址寬度。
-- `generate for` 複製結構；`generate if` 在備選方案之間選擇；兩者都在 simulation 或合成之前的闡述時確定。
-- 具名的 generate 範圍（`begin : label`）改善可讀性並支援階層性引用。
+- 帶型別的 `parameter` 值記錄了意圖，也讓闡述時得以檢查。
+- `localparam` 用來表達呼叫者無法覆寫的衍生常數。
+- `$bits` 在闡述時量出任何型別的大小；`$clog2` 算出給定深度所需的最小位址寬度。
+- `generate for` 複製結構，`generate if` 在備選方案間做選擇，兩者都在 simulation 或合成之前的闡述階段定案。
+- 具名的 generate 範圍（`begin : label`）能改善可讀性，也支援階層引用。
 
 ---
 
